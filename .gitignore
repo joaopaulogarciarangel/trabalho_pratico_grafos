@@ -1,0 +1,8 @@
+dados/
+build/
+resultados/
+referencias/ESPECIFICACAO.md
+build-asan/
+!tests/dados/
+__pycache__/
+referencias/

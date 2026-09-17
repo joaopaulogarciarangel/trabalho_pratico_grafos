@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "release",
+      "displayName": "Release (-O2)",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "debug-asan",
+      "displayName": "Debug com AddressSanitizer e UBSan",
+      "binaryDir": "${sourceDir}/build-asan",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "GRAFOS_SANITIZERS": "ON" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "release", "configurePreset": "release" },
+    { "name": "debug-asan", "configurePreset": "debug-asan" }
+  ],
+  "testPresets": [
+    { "name": "release", "configurePreset": "release", "output": { "outputOnFailure": true } },
+    { "name": "debug-asan", "configurePreset": "debug-asan", "output": { "outputOnFailure": true } }
+  ]
+}

@@ -1,0 +1,90 @@
+
+[execucao]
+  data_hora: 2026-09-17 17:13:38
+  grafo: grafo_5
+  arquivo: /home/jpgar/grafos/dados/grafo_5.txt
+  representacao: lista
+  semente: 42
+  limite_ifub_s: 1800.0
+  cpu: AMD Ryzen 5 5500
+  memtotal_mb: 7874.641
+  compilador: g++ 15.2.0
+
+[estudo 1: memoria]
+  memoria_status: ok
+  n: 4843750
+  m: 13168911
+  linhas_aresta: 13168928
+  lacos_ignorados: 7
+  repetidas_ignoradas: 10
+  rss_base_mb: 4.480
+  rss_depois_mb: 307.848
+  rss_diferenca_mb: 303.367
+  estrutura_mb: 229.813
+  estrutura_bytes: 240976288
+  tempo_carga_s: 2.403930
+
+[estudos 2 e 3: tempo de BFS e DFS]
+  num_buscas: 100
+  bfs_media_s: 3.022947152e-01
+  bfs_desvio_s: 1.528605580e-01
+  dfs_media_s: 7.999568884e-01
+  dfs_desvio_s: 4.233713563e-01
+  vertices_sorteados: 307907 838575 4303951 2811913 4689382 3572179 2363537 847395 4245051 4274258 4189346 3630913 2039143 480157 1474810 3809893 386109 127211 1234860 3054352 4635410 1793325 1778926 3538580 4839040 3061711 3598554 1181123 881631 531891 3077560 2956384 621503 2552789 1144567 2108918 3215727 3549097 3163563 2034158 2538652 4212285 3623536 3029972 607047 4146766 2984163 3756964 3517576 1502695 2606029 4064716 3199909 3874682 1298718 578551 1351828 1955366 2617364 2041653 4102136 200319 4755532 3565812 378984 4473632 889954 617806 501491 2908310 571172 4312475 171022 2103598 118413 4757219 3716474 790311 1651091 1119269 496425 4212358 3077998 3127641 815544 734515 192720 2031863 2080696 1186416 214808 1938398 1687558 298074 605041 2550910 3305029 2873575 4230383 1294364
+
+[estudo 4: pais]
+  pai_bfs_raiz1_v10: 1888350
+  pai_bfs_raiz1_v20: nao_alcancado
+  pai_bfs_raiz1_v30: 2502539
+  pai_dfs_raiz1_v10: 1888350
+  pai_dfs_raiz1_v20: nao_alcancado
+  pai_dfs_raiz1_v30: 191713
+  pai_bfs_raiz2_v10: nao_alcancado
+  pai_bfs_raiz2_v20: nao_alcancado
+  pai_bfs_raiz2_v30: nao_alcancado
+  pai_dfs_raiz2_v10: nao_alcancado
+  pai_dfs_raiz2_v20: nao_alcancado
+  pai_dfs_raiz2_v30: nao_alcancado
+  pai_bfs_raiz3_v10: 1888350
+  pai_bfs_raiz3_v20: nao_alcancado
+  pai_bfs_raiz3_v30: 191713
+  pai_dfs_raiz3_v10: 1888350
+  pai_dfs_raiz3_v20: nao_alcancado
+  pai_dfs_raiz3_v30: 2502539
+
+[estudo 5: distancias]
+  dist_10_20: infinito
+  dist_10_30: 9
+  dist_20_30: infinito
+
+[estudo 6: componentes]
+  grau_minimo: 1
+  grau_maximo: 22
+  grau_medio: 5.4375
+  mediana_grau: 5.0
+  num_componentes: 5
+  maior_componente: 2500000
+  menor_componente: 156250
+  arquivo_estatisticas: grafo_5_lista_estatisticas.txt
+
+[estudo 7: diametro]
+  diam_aprox_valor: 58
+  diam_aprox_limite_inferior: 58
+  diam_aprox_limite_superior: 78
+  diam_aprox_u: 4495114
+  diam_aprox_v: 1700852
+  diam_aprox_exato: nao
+  diam_aprox_tempo_esgotado: nao
+  diam_aprox_num_bfs: 25
+  diam_aprox_segundos: 5.094046
+  diam_exato_valor: 59
+  diam_exato_limite_inferior: 59
+  diam_exato_limite_superior: 59
+  diam_exato_u: 2936772
+  diam_exato_v: 2289520
+  diam_exato_exato: sim
+  diam_exato_tempo_esgotado: nao
+  diam_exato_num_bfs: 5181
+  diam_exato_segundos: 77.123658
+
+CSV: /home/jpgar/grafos/resultados/grafo_5_lista.csv

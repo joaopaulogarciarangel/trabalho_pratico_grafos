@@ -1,0 +1,14 @@
+chave,valor
+data_hora,2026-09-17 17:51:20
+grafo,grafo_6
+arquivo,/home/jpgar/grafos/dados/grafo_6.txt
+representacao,matriz
+semente,42
+limite_ifub_s,1800.0
+cpu,AMD Ryzen 5 5500
+memtotal_mb,7874.641
+compilador,g++ 15.2.0
+matriz_estimada_mb,2796911.597
+memavailable_mb,6902.949
+n,4843750
+memoria_status,inviavel

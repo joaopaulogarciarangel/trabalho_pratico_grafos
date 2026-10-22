@@ -1,6 +1,8 @@
 #include "grafos/leitura.hpp"
 
 #include <cerrno>
+#include <charconv>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <limits>
@@ -24,15 +26,15 @@ bool eh_espaco(char c) {
     return c == ' ' || c == '\t' || c == '\r' || c == '\v' || c == '\f';
 }
 
-// Le ate dois tokens da linha que comeca em p e avanca p para o inicio da proxima linha.
-int ler_linha(const char*& p, const char* fim, Token tokens[2]) {
+// Le ate tres tokens da linha que comeca em p e avanca p para o inicio da proxima linha.
+int ler_linha(const char*& p, const char* fim, Token tokens[3]) {
     int ntok = 0;
     while (p < fim && *p != '\n') {
         if (eh_espaco(*p)) {
             ++p;
             continue;
         }
-        if (ntok == 2) {  // colunas extras sao ignoradas (peso, na parte 2)
+        if (ntok == 3) {  // colunas a partir da quarta sao ignoradas
             p = static_cast<const char*>(std::memchr(p, '\n', static_cast<size_t>(fim - p)));
             if (p == nullptr) p = fim;
             break;
@@ -87,6 +89,16 @@ int64_t ler_vertice(const Token& t, int64_t linha, int32_t n) {
     return v;
 }
 
+// Peso: double finito convertido com from_chars (independente de locale).
+double ler_peso(const Token& t, int64_t linha) {
+    double w = 0.0;
+    auto r = std::from_chars(t.ini, t.fim, w);
+    if (r.ec != std::errc() || r.ptr != t.fim || !std::isfinite(w)) {
+        erro_linha(linha, "peso invalido '" + texto(t) + "'");
+    }
+    return w;
+}
+
 }  // namespace
 
 ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
@@ -94,7 +106,7 @@ ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
     const char* p = dados;
     const char* const fim = dados + tamanho;
     int64_t linha = 0;
-    Token tok[2];
+    Token tok[3];
 
     int ntok = 0;
     while (p < fim) {
@@ -122,6 +134,7 @@ ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
     r.origem.reserve(linhas_restantes);
     r.destino.reserve(linhas_restantes);
 
+    bool primeira_aresta = true;
     while (p < fim) {
         ++linha;
         ntok = ler_linha(p, fim, tok);
@@ -129,6 +142,16 @@ ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
         int64_t u = ler_vertice(tok[0], linha, r.n);
         if (ntok == 1) erro_linha(linha, "esperados dois vertices, encontrado apenas um");
         int64_t v = ler_vertice(tok[1], linha, r.n);
+        if (primeira_aresta) {  // a primeira linha de aresta decide se o arquivo tem peso
+            primeira_aresta = false;
+            r.ponderado = ntok == 3;
+            if (r.ponderado) r.peso.reserve(linhas_restantes);
+        }
+        double w = 0.0;
+        if (r.ponderado) {
+            if (ntok < 3) erro_linha(linha, "peso ausente");
+            w = ler_peso(tok[2], linha);
+        }
         ++r.linhas_aresta;
         if (u == v) {
             ++r.lacos_ignorados;
@@ -136,6 +159,10 @@ ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
         }
         r.origem.push_back(static_cast<int32_t>(u - 1));
         r.destino.push_back(static_cast<int32_t>(v - 1));
+        if (r.ponderado) {
+            r.peso.push_back(w);
+            if (w < 0) r.tem_peso_negativo = true;
+        }
     }
     return r;
 }

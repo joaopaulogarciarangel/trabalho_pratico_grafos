@@ -27,7 +27,7 @@ TEST_CASE("P2 6.1: figura 1 do enunciado com pesos (texto e arquivo)") {
                                           : grafos::carregar(teste::caminho_dados("figura1_pesos.txt"), rep);
             CHECK(g.ponderado());
             CHECK(g.tem_peso_negativo());
-            CHECK(g.m() == 5);
+            CHECK(g.m() == 6);
             CHECK(g.peso(1, 2) == 0.1);
             CHECK(g.peso(2, 5) == 0.2);
             CHECK(g.peso(5, 3) == 5.0);
@@ -125,12 +125,15 @@ TEST_CASE("P2 6.1: peso de nao vizinhos e de vertice invalido lanca") {
 }
 
 TEST_CASE("P2 6.1: memoria com pesos") {
-    // Figura 1: n = 5, 2m = 10 entradas, listas reservadas no tamanho exato.
-    const size_t base = 10 * 4 + 5 * sizeof(std::vector<int32_t>) + 5 * 4;
-    grafos::Grafo sem = grafos::carregar(teste::caminho_dados("figura1.txt"), Representacao::Lista);
+    // Mesma topologia (figura 1 com pesos: n = 5, 2m = 12 entradas), com e sem a coluna de peso;
+    // listas reservadas no tamanho exato.
+    std::string sem_peso;
+    for (const char* l : {"5", "1 2", "2 5", "5 3", "3 4", "4 5", "1 5"}) sem_peso += std::string(l) + "\n";
+    const size_t base = 12 * 4 + 5 * sizeof(std::vector<int32_t>) + 5 * 4;
+    grafos::Grafo sem = teste::grafo_de_texto(sem_peso, Representacao::Lista);
     grafos::Grafo com = teste::grafo_de_texto(FIGURA1_PESOS, Representacao::Lista);
     CHECK(sem.bytes_estrutura() == base);
-    CHECK(com.bytes_estrutura() == base + 10 * 8 + 5 * sizeof(std::vector<double>));
+    CHECK(com.bytes_estrutura() == base + 12 * 8 + 5 * sizeof(std::vector<double>));
 
     CHECK(grafos::estimar_bytes_matriz(1000, true) == grafos::estimar_bytes_matriz(1000, false) + 8 * 1000 * 1000);
     CHECK(grafos::estimar_bytes_matriz(1000) == grafos::estimar_bytes_matriz(1000, false));

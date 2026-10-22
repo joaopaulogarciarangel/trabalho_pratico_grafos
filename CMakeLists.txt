@@ -36,6 +36,8 @@ add_library(grafos_lib STATIC
     src/analise.cpp
     src/diametro.cpp
     src/sistema.cpp
+    src/dijkstra.cpp
+    src/nomes.cpp
 )
 set_target_properties(grafos_lib PROPERTIES OUTPUT_NAME grafos)
 target_include_directories(grafos_lib PUBLIC include)
@@ -60,6 +62,10 @@ add_executable(testes
     tests/teste_distancia.cpp
     tests/teste_diametro.cpp
     tests/teste_sistema.cpp
+    tests/teste_pesos.cpp
+    tests/teste_fronteira.cpp
+    tests/teste_dijkstra.cpp
+    tests/teste_nomes.cpp
 )
 target_include_directories(testes SYSTEM PRIVATE third_party)
 target_include_directories(testes PRIVATE tests)

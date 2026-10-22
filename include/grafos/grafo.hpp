@@ -31,6 +31,9 @@ public:
     size_t bytes_estrutura() const;
     int32_t grau(int32_t v) const;                  // v em 1..n
     bool sao_vizinhos(int32_t u, int32_t v) const;  // u, v em 1..n
+    bool ponderado() const;
+    bool tem_peso_negativo() const;
+    double peso(int32_t u, int32_t v) const;        // u, v em 1..n; ErroGrafo se nao forem vizinhos
 
     template <class F>
     decltype(auto) visitar(F&& f) const {

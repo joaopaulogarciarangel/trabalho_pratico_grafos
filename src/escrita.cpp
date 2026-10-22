@@ -140,4 +140,8 @@ void escrever_estatisticas(const Estatisticas& e, const Componentes& c, const st
     saida.fechar();
 }
 
+void escrever_dijkstra(const ResultadoDijkstra&, const std::string&) {
+    throw ErroGrafo("nao implementado");
+}
+
 }  // namespace grafos

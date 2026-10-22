@@ -15,10 +15,15 @@ struct InfoLeitura {
 
 // Lista temporaria de arestas: indices internos 0..n-1, lacos ja descartados,
 // repeticoes ainda presentes (sao descartadas na construcao da representacao).
+// O arquivo e ponderado se a primeira linha de aresta tiver peso numerico; nesse caso
+// peso[i] e o peso da aresta i (vazio se nao ponderado).
 struct ArestasLidas {
     int32_t n = 0;
     std::vector<int32_t> origem;
     std::vector<int32_t> destino;
+    std::vector<double> peso;
+    bool ponderado = false;
+    bool tem_peso_negativo = false;  // alguma aresta (nao laco) com peso < 0
     int64_t linhas_aresta = 0;
     int64_t lacos_ignorados = 0;
 };

@@ -34,6 +34,21 @@ bool Grafo::sao_vizinhos(int32_t u, int32_t v) const {
     return visitar([u, v](const auto& g) { return g.sao_vizinhos(u - 1, v - 1); });
 }
 
+bool Grafo::ponderado() const {
+    return visitar([](const auto& g) { return g.ponderado(); });
+}
+
+bool Grafo::tem_peso_negativo() const {
+    return visitar([](const auto& g) { return g.tem_peso_negativo(); });
+}
+
+double Grafo::peso(int32_t u, int32_t v) const {
+    if (!sao_vizinhos(u, v)) {
+        throw ErroGrafo("vertices " + std::to_string(u) + " e " + std::to_string(v) + " nao sao vizinhos");
+    }
+    return visitar([u, v](const auto& g) { return g.peso(u - 1, v - 1); });
+}
+
 Grafo construir_grafo(const ArestasLidas& arestas, Representacao rep, InfoLeitura* info) {
     Grafo g = rep == Representacao::Lista ? Grafo(GrafoLista::construir(arestas))
                                           : Grafo(GrafoMatriz::construir(arestas));

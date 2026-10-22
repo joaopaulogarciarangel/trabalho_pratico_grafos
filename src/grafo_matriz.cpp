@@ -2,7 +2,7 @@
 
 namespace grafos {
 
-size_t estimar_bytes_matriz(int32_t n) {
+size_t estimar_bytes_matriz(int32_t n, bool /*ponderado*/) {  // pesos: etapa 2
     size_t nn = static_cast<size_t>(n);
     size_t palavras = (nn + 63) / 64;
     return nn * palavras * 8 + 4 * nn;

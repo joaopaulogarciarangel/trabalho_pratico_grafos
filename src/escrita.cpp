@@ -57,6 +57,13 @@ public:
         usado_ = static_cast<size_t>(r.ptr - buffer_.get());
     }
 
+    // Forma mais curta que reconstroi o double (to_chars sem precisao), ponto decimal.
+    void real(double x) {
+        if (usado_ + 64 > kTamanho) descarregar();
+        auto r = std::to_chars(buffer_.get() + usado_, buffer_.get() + kTamanho, x);
+        usado_ = static_cast<size_t>(r.ptr - buffer_.get());
+    }
+
     void fechar() {
         descarregar();
         std::FILE* f = arquivo_;
@@ -140,8 +147,27 @@ void escrever_estatisticas(const Estatisticas& e, const Componentes& c, const st
     saida.fechar();
 }
 
-void escrever_dijkstra(const ResultadoDijkstra&, const std::string&) {
-    throw ErroGrafo("nao implementado");
+void escrever_dijkstra(const ResultadoDijkstra& r, const std::string& caminho) {
+    Escritor saida(caminho);
+    saida.texto("# Dijkstra origem=");
+    saida.inteiro(r.origem);
+    saida.texto(" fila=");
+    saida.texto(nome(r.fila));
+    saida.texto("\n# vertice pai distancia\n");
+    const size_t n = r.dist.size();
+    for (size_t i = 0; i < n; ++i) {
+        saida.inteiro(static_cast<long long>(i) + 1);
+        saida.caractere(' ');
+        saida.inteiro(r.pai[i]);
+        saida.caractere(' ');
+        if (r.pai[i] < 0) {
+            saida.texto("infinito");
+        } else {
+            saida.real(r.dist[i]);
+        }
+        saida.caractere('\n');
+    }
+    saida.fechar();
 }
 
 }  // namespace grafos

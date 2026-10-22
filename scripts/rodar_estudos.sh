@@ -2,6 +2,7 @@
 # Roda o programa `estudos` em todos os grafos de dados/, nas representacoes lista e matriz.
 # Uso: scripts/rodar_estudos.sh [opcoes extras para estudos, ex.: --limite-ifub 600]
 # Combinacoes cujo CSV ja existe em resultados/ sao puladas (permite retomar).
+# Os arquivos da Parte 2 (grafo_W_*, rede_*) sao ignorados: veja rodar_estudos_dijkstra.sh.
 
 set -u
 set -o pipefail
@@ -29,8 +30,17 @@ ok=0
 pulados=0
 falhas=()
 
+# Arquivos da Parte 2, com pesos: tratados por rodar_estudos_dijkstra.sh.
+da_parte2() {
+    case "$(basename "$1")" in
+        grafo_W_* | rede_*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 # 1. Descompactar, mantendo o original, os .gz que ainda nao tem o .txt correspondente.
 for compactado in "$DADOS"/*.txt.gz "$DADOS"/*_txt.gz; do
+    da_parte2 "$compactado" && continue
     case "$compactado" in
         *.txt.gz) texto="${compactado%.gz}" ;;
         *) texto="${compactado%_txt.gz}.txt" ;;
@@ -48,7 +58,10 @@ for compactado in "$DADOS"/*.txt.gz "$DADOS"/*_txt.gz; do
     fi
 done
 
-arquivos=("$DADOS"/*.txt)
+arquivos=()
+for arquivo in "$DADOS"/*.txt; do
+    da_parte2 "$arquivo" || arquivos+=("$arquivo")
+done
 if [ ${#arquivos[@]} -eq 0 ]; then
     echo "erro: nenhum arquivo .txt em '$DADOS'." >&2
     exit 1

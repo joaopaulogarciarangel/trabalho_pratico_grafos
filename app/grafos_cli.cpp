@@ -1,4 +1,4 @@
-// Programa de linha de comando `grafos`: estatisticas, BFS, DFS, distancia e diametro.
+// Programa de linha de comando `grafos`: estatisticas, BFS, DFS, distancia, diametro e Dijkstra.
 
 #include <charconv>
 #include <chrono>
@@ -22,9 +22,14 @@ const char* const AJUDA = R"(uso:
   grafos dfs <arquivo> --origem <v> [--repr lista|matriz] -o <saida>
       grava a arvore de busca (vertice pai nivel ordem) em <saida>
   grafos distancia <arquivo> <u> <v> [--repr lista|matriz] [--caminho]
-      imprime a distancia entre u e v ("infinito" se nao houver caminho)
+      imprime a distancia entre u e v em numero de arestas, ignorando pesos
+      ("infinito" se nao houver caminho)
   grafos diametro <arquivo> [--repr lista|matriz] [--ingenuo | --aproximado | --exato] [--limite <segundos>]
       imprime o diametro (padrao: --exato com limite de 1800 s)
+  grafos dijkstra <arquivo> --origem <v> [--fila heap|vetor] [--repr lista|matriz]
+                  [--destinos v1,v2,...] [-o <saida>]
+      caminhos minimos com pesos a partir de v (padrao: --fila heap); imprime distancia e
+      caminho ate cada destino e, com -o, grava a arvore (vertice pai distancia)
   grafos --help
 
 Vertices numerados de 1 a n. Representacao padrao: lista.
@@ -42,6 +47,8 @@ struct Opcoes {
     std::optional<std::string> saida;
     std::optional<std::string> origem;
     std::optional<std::string> limite;
+    std::optional<std::string> fila;
+    std::optional<std::string> destinos;
     std::vector<std::string> algoritmos;
     bool caminho = false;
 };
@@ -63,6 +70,10 @@ Opcoes ler_opcoes(int argc, char** argv) {
             o.origem = valor(a);
         } else if (a == "--limite") {
             o.limite = valor(a);
+        } else if (a == "--fila") {
+            o.fila = valor(a);
+        } else if (a == "--destinos") {
+            o.destinos = valor(a);
         } else if (a == "--caminho") {
             o.caminho = true;
         } else if (a == "--ingenuo" || a == "--aproximado" || a == "--exato") {
@@ -116,10 +127,12 @@ grafos::Grafo carregar_com_resumo(const std::string& arquivo, const std::string&
     } else {
         throw ErroUso("representacao invalida: '" + repr_texto + "' (use lista ou matriz)");
     }
-    // Checa a viabilidade so pelo n, antes de alocar (um OOM no WSL derruba o servico inteiro).
-    const int32_t n = grafos::ler_num_vertices(arquivo);
+    // Checa a viabilidade so pelo cabecalho, antes de alocar (um OOM no WSL derruba o servico inteiro).
+    const grafos::Cabecalho cab = grafos::ler_cabecalho(arquivo);
+    const int32_t n = cab.n;
     const bool matriz = rep == grafos::Representacao::Matriz;
-    const grafos::Viabilidade v = matriz ? grafos::checar_viabilidade_matriz(n) : grafos::checar_viabilidade_lista(n);
+    const grafos::Viabilidade v =
+        matriz ? grafos::checar_viabilidade_matriz(n, cab.ponderado) : grafos::checar_viabilidade_lista(n);
     if (!v.viavel) {
         throw grafos::ErroGrafo(std::string(matriz ? "matriz exigiria " : "lista exigiria pelo menos ") +
                                 formatar_gb(static_cast<double>(v.bytes_estimados)) + " (n = " + std::to_string(n) +
@@ -231,6 +244,50 @@ int executar(const Opcoes& o) {
                   << "tempo_esgotado: " << (d.tempo_esgotado ? "sim" : "nao") << "\n"
                   << "num_bfs: " << d.num_bfs << "\n"
                   << "segundos: " << grafos::formatar_fixo(d.segundos, 6) << "\n";
+        return 0;
+    }
+    if (o.comando == "dijkstra") {
+        exigir_posicionais(o, 1,
+                           "dijkstra <arquivo> --origem <v> [--fila heap|vetor] [--repr lista|matriz] "
+                           "[--destinos v1,v2,...] [-o <saida>]");
+        if (!o.origem) throw ErroUso("dijkstra exige --origem <v>");
+        const int32_t origem = ler_vertice(*o.origem, "vertice de origem");
+        const std::string fila_texto = o.fila.value_or("heap");
+        if (fila_texto != "heap" && fila_texto != "vetor") {
+            throw ErroUso("fila invalida: '" + fila_texto + "' (use heap ou vetor)");
+        }
+        const grafos::FilaDijkstra fila = fila_texto == "heap" ? grafos::FilaDijkstra::Heap : grafos::FilaDijkstra::Vetor;
+        std::vector<int32_t> destinos;
+        if (o.destinos) {
+            size_t ini = 0;
+            while (ini <= o.destinos->size()) {
+                size_t fim = o.destinos->find(',', ini);
+                if (fim == std::string::npos) fim = o.destinos->size();
+                destinos.push_back(ler_vertice(o.destinos->substr(ini, fim - ini), "destino"));
+                ini = fim + 1;
+            }
+        }
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr);
+        Cronometro c;
+        const grafos::ResultadoDijkstra r = grafos::dijkstra(g, origem, fila);
+        imprimir_tempo(c.segundos());
+        std::cout << "origem: " << origem << ", fila: " << fila_texto << ", explorados: " << r.explorados << "\n";
+        for (int32_t d : destinos) {
+            const std::vector<int32_t> cam = grafos::caminho(r, d);
+            std::cout << "destino " << d << ": ";
+            if (cam.empty()) {
+                std::cout << "infinito\n";
+                continue;
+            }
+            std::cout << "distancia " << grafos::formatar_curto(r.dist[static_cast<size_t>(d - 1)]) << ", "
+                      << cam.size() - 1 << " arestas\n  caminho: ";
+            for (size_t i = 0; i < cam.size(); ++i) std::cout << (i > 0 ? " -> " : "") << cam[i];
+            std::cout << "\n";
+        }
+        if (o.saida) {
+            grafos::escrever_dijkstra(r, *o.saida);
+            std::cout << "saida: " << *o.saida << "\n";
+        }
         return 0;
     }
     throw ErroUso("comando desconhecido: '" + o.comando + "'");

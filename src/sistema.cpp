@@ -81,15 +81,19 @@ std::string data_hora_atual() {
     return buffer;
 }
 
-int32_t ler_num_vertices(const std::string& caminho) {
+namespace {
+
+// Parseia so as primeiras `linhas` linhas nao vazias do arquivo (le blocos ate te-las
+// completas, ou ate o fim do arquivo), com as regras e mensagens da leitura completa.
+ArestasLidas ler_inicio(const std::string& caminho, int linhas) {
     std::unique_ptr<std::FILE, int (*)(std::FILE*)> arquivo(std::fopen(caminho.c_str(), "rb"), &std::fclose);
     if (!arquivo) {
         throw ErroGrafo("nao foi possivel abrir '" + caminho + "': " + std::strerror(errno));
     }
-    // Le blocos ate ter a primeira linha nao vazia completa (ou o fim do arquivo).
     std::string lido;
     char bloco[4096];
     bool linha_nao_vazia = false;
+    int completas = 0;
     bool pronto = false;
     while (!pronto) {
         const size_t k = std::fread(bloco, 1, sizeof bloco, arquivo.get());
@@ -99,17 +103,29 @@ int32_t ler_num_vertices(const std::string& caminho) {
         for (size_t i = inicio; i < lido.size(); ++i) {
             const char c = lido[i];
             if (c == '\n') {
-                if (linha_nao_vazia) {
+                if (linha_nao_vazia && ++completas == linhas) {
                     lido.resize(i + 1);
                     pronto = true;
                     break;
                 }
+                linha_nao_vazia = false;
             } else if (c != ' ' && c != '\t' && c != '\r' && c != '\v' && c != '\f') {
                 linha_nao_vazia = true;
             }
         }
     }
-    return parsear_arestas(lido.data(), lido.size()).n;
+    return parsear_arestas(lido.data(), lido.size());
+}
+
+}  // namespace
+
+int32_t ler_num_vertices(const std::string& caminho) {
+    return ler_inicio(caminho, 1).n;
+}
+
+Cabecalho ler_cabecalho(const std::string& caminho) {
+    const ArestasLidas a = ler_inicio(caminho, 2);
+    return {a.n, a.ponderado};
 }
 
 namespace {
@@ -125,8 +141,8 @@ Viabilidade checar_viabilidade(size_t bytes_estimados) {
 
 }  // namespace
 
-Viabilidade checar_viabilidade_matriz(int32_t n) {
-    return checar_viabilidade(estimar_bytes_matriz(n));
+Viabilidade checar_viabilidade_matriz(int32_t n, bool ponderado) {
+    return checar_viabilidade(estimar_bytes_matriz(n, ponderado));
 }
 
 Viabilidade checar_viabilidade_lista(int32_t n) {
@@ -164,6 +180,12 @@ std::string formatar_cientifico(double x) {
 std::string formatar_fixo(double x, int casas) {
     char buffer[128];
     auto r = std::to_chars(buffer, buffer + sizeof buffer, x, std::chars_format::fixed, casas);
+    return std::string(buffer, r.ptr);
+}
+
+std::string formatar_curto(double x) {
+    char buffer[64];
+    auto r = std::to_chars(buffer, buffer + sizeof buffer, x);
     return std::string(buffer, r.ptr);
 }
 

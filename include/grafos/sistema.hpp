@@ -25,6 +25,14 @@ std::string data_hora_atual();
 // mensagens de erro da leitura completa.
 int32_t ler_num_vertices(const std::string& caminho);
 
+struct Cabecalho {
+    int32_t n;
+    bool ponderado;  // a primeira linha de aresta tem peso
+};
+
+// Le so o n e a primeira linha de aresta (mesmas regras da leitura completa).
+Cabecalho ler_cabecalho(const std::string& caminho);
+
 struct Viabilidade {
     bool viavel;
     size_t bytes_estimados;     // estimativa da estrutura
@@ -33,7 +41,7 @@ struct Viabilidade {
 };
 
 // Compara a estimativa com 80% de MemAvailable, antes de alocar.
-Viabilidade checar_viabilidade_matriz(int32_t n);  // estimar_bytes_matriz(n)
+Viabilidade checar_viabilidade_matriz(int32_t n, bool ponderado = false);  // estimar_bytes_matriz(n, ponderado)
 Viabilidade checar_viabilidade_lista(int32_t n);   // estimar_bytes_lista_minimo(n)
 
 // Sorteia min(k, n) vertices distintos de 1..n com mt19937_64 e rejeicao (sem
@@ -45,5 +53,8 @@ std::string formatar_cientifico(double x);
 
 // Numero com casas fixas, independente de locale.
 std::string formatar_fixo(double x, int casas);
+
+// Forma mais curta que reconstroi o double ("0.1", "2.5999999999999996"), independente de locale.
+std::string formatar_curto(double x);
 
 }  // namespace grafos

@@ -49,6 +49,9 @@ target_link_libraries(grafos PRIVATE grafos_lib)
 add_executable(estudos estudos/estudos.cpp)
 target_link_libraries(estudos PRIVATE grafos_lib)
 
+add_executable(estudos_dijkstra estudos/estudos_dijkstra.cpp)
+target_link_libraries(estudos_dijkstra PRIVATE grafos_lib)
+
 add_executable(gerar_grafo app/gerar_grafo.cpp)
 target_link_libraries(gerar_grafo PRIVATE grafos_opcoes)
 
@@ -81,3 +84,10 @@ add_test(NAME programas
         -DTMP=${CMAKE_CURRENT_BINARY_DIR}/teste_programas
         -DSANITIZERS=${GRAFOS_SANITIZERS}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/programas.cmake)
+add_test(NAME programas_dijkstra
+    COMMAND ${CMAKE_COMMAND}
+        -DGRAFOS=$<TARGET_FILE:grafos>
+        -DESTUDOS_DIJKSTRA=$<TARGET_FILE:estudos_dijkstra>
+        -DDADOS=${CMAKE_CURRENT_SOURCE_DIR}/tests/dados
+        -DTMP=${CMAKE_CURRENT_BINARY_DIR}/teste_programas_dijkstra
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/programas_dijkstra.cmake)

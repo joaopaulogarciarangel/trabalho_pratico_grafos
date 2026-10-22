@@ -10,7 +10,7 @@
 ## Leitura
 
 - Arquivo inteiro lido com `fread` e parseado manualmente. Os `\n` são contados antes para reservar exatamente os arrays temporários, e o buffer é liberado antes de construir a estrutura.
-- Aceita `\r\n`, tabulações, espaços extras e linhas vazias. `n` = primeiro número da primeira linha não vazia. Colunas a partir da terceira são ignoradas (peso, na parte 2).
+- Aceita `\r\n`, tabulações, espaços extras e linhas vazias. `n` = primeiro número da primeira linha não vazia. A terceira coluna é o peso (Parte 2, abaixo); a partir da quarta, colunas são ignoradas.
 - Erros citam a linha física: vértice fora de 1..n, linha com um só número, texto inválido, `n` ausente, `n ≤ 0` ou acima de `int32_t`.
 - Laços e arestas repetidas são ignorados e contados; m é o número de arestas distintas. `linhas_aresta` inclui laços e repetições.
 - A lista temporária é destruída e `malloc_trim(0)` devolve a memória ao sistema antes de retornar, para o RSS medido refletir só a estrutura.
@@ -48,13 +48,26 @@
 - **Tempo:** 100 vértices distintos sorteados com `mt19937_64` (semente 42) e **rejeição própria** (sem `uniform_int_distribution`, para ser reprodutível entre compiladores), iguais para BFS e DFS nas duas representações. Uma BFS de aquecimento não contada; depois 100 BFS e 100 DFS, cada chamada cronometrada com `steady_clock` (inclui a inicialização interna da busca, exclui qualquer escrita). Média e desvio padrão amostral.
 - Resultados em CSV `chave,valor`, gravado num `.tmp` e renomeado só ao final: uma execução interrompida não é tomada como concluída. `rodar_estudos.sh` pula combinações com CSV existente, registra falhas e segue; `consolidar.py` gera o CSV consolidado e as tabelas.
 
-## Preparação para as partes 2 e 3
+## Parte 2: pesos e Dijkstra
 
-- A matriz ponderada será outra classe (`double`, com um valor especial para "aresta inexistente"), pois pesos não cabem em bitset; a lista ponderada guardará pares (vizinho, peso).
-- As novas classes só precisam implementar a mesma interface para reaproveitar os algoritmos template.
-- `carregar` já recebe `direcionado` (hoje recusa) e trabalha com arcos (cada aresta gera (u,v) e (v,u)); a terceira coluna do arquivo já é tolerada.
+- **Leitura com peso:** a primeira linha de aresta decide se o arquivo é ponderado (3 ou mais colunas). Nesse caso toda linha precisa de peso `double` finito (`std::from_chars`, independente de locale); peso ausente, texto, `nan` ou `inf` dão erro com o número da linha. Arquivo sem peso continua como na Parte 1 (todos os pesos valem 1). **Aresta repetida fica com o menor peso**, o único que importa para caminho mínimo; laço é descartado mesmo com peso negativo.
+- **Lista:** os pesos ficam em vetores **paralelos** às listas de vizinhos (`pesos[v][i]` é o peso da aresta até `adjacencia[v][i]`), ordenados junto com os vizinhos e alocados **só em grafo ponderado**: grafo sem peso tem a mesma memória e o mesmo desempenho da Parte 1. Optamos por isso em vez de mudar para pares (vizinho, peso), que dobraria o tamanho do laço interno da BFS/DFS mesmo sem peso.
+- **Matriz:** o bitset continua dizendo se a aresta existe; em grafo ponderado ganha um bloco denso `n·n` de `double` (+`8n²` bytes). Já no W_3 (n = 100.000) seriam 80 GB, então a matriz ponderada só serve a grafos pequenos (testes); a checagem de viabilidade antes de alocar conta esses bytes.
+- **Um único Dijkstra** (aula 8), template sobre a representação e sobre a **fronteira** — a estrutura que guarda as estimativas, as atualiza e extrai o mínimo, com a interface `inserir`, `diminuir_chave`, `vazia`, `extrair_minimo`:
+  - **vetor:** um vetor de chaves com `+∞` fora da fronteira; cada extração varre os n vértices → O(n²) no total. `diminuir_chave` é O(1);
+  - **heap:** heap binário mínimo próprio, em vetor (aula 9), **indexado** por `pos[v]`: achar `v` é O(1), então `diminuir_chave` sobe o elemento em O(log n) → O((n + m) log n). `std::priority_queue` não permite mudar a chave de um elemento (exigiria reinserções e entradas obsoletas). Só os vértices descobertos entram no heap.
+- **Desempate por (distância, id)** nas duas fronteiras e relaxamento estrito (`<`), com vizinhos em ordem crescente: vetor e heap produzem exatamente as mesmas distâncias, pais e ordem de exploração (conferido nos testes e em cada medição).
+- **Pesos negativos:** recusados antes de qualquer alocação ("a biblioteca ainda nao implementa caminhos minimos com pesos negativos"); peso zero é aceito.
+- **Resultado:** distância, pai (árvore de caminhos mínimos) e ordem de exploração por vértice; `caminho(destino)` sobe pelos pais. Distâncias gravadas na forma mais curta que reconstrói o `double`.
+- **Rede de colaboração:** nomes lidos de `id,nome` cortando na primeira vírgula (há nomes com vírgula); busca exata em UTF-8 (`Éva Tardos`), recusando nome ausente ou ambíguo.
+- **Tempo (P2-2):** 100 origens sorteadas como na Parte 1 (semente 42); uma execução de aquecimento por fila; cada chamada cronometrada com `steady_clock`. O vetor roda nas **primeiras k** dessas origens, com k fixo por grafo para caber em cerca de 1,5 h (W_3: 100, W_4: 10); a tabela compara com a média do heap **nas mesmas origens**. No W_5 (n = 10⁷), uma execução do vetor levaria cerca de um dia: ela é interrompida após 1% dos vértices explorados e extrapolada linearmente (cada extração custa uma varredura de n), registrada como **estimativa**.
+
+## Preparação para a parte 3
+
+- `carregar` já recebe `direcionado` (hoje recusa) e trabalha com arcos (cada aresta gera (u,v) e (v,u)).
+- Novos algoritmos sobre grafos com peso só precisam de `para_cada_vizinho_com_peso`, disponível nas duas representações.
 
 ## Ferramentas
 
 - C++17, g++, CMake ≥ 3.16; Release com `-O2 -DNDEBUG`, sem `-march=native`; preset `debug-asan` com `-fsanitize=address,undefined`.
-- Testes com doctest 2.5.3: exemplos das aulas e do enunciado, comparação lista × matriz, referências independentes (DFS recursiva, BFS com `std::queue`, diâmetro ingênuo) e milhares de grafos aleatórios.
+- Testes com doctest 2.5.3: exemplos das aulas e do enunciado, comparação lista × matriz, referências independentes (DFS recursiva, BFS com `std::queue`, diâmetro ingênuo, Bellman-Ford para o Dijkstra, `std::set` para as fronteiras) e milhares de grafos aleatórios.

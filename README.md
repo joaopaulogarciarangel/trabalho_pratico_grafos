@@ -1,6 +1,6 @@
 # grafos
 
-Biblioteca de grafos em C++17 (COS 242 — Teoria dos Grafos, Trabalho Parte 1): leitura de grafos não direcionados, representação por **lista** ou **matriz de adjacência**, BFS, DFS, distância, componentes conexas, estatísticas de grau e diâmetro (ingênuo, aproximado e exato). Inclui o programa de linha de comando `grafos`, o programa `estudos` e scripts para os estudos de caso.
+Biblioteca de grafos em C++17 (COS 242 — Teoria dos Grafos, Trabalho Partes 1 e 2): leitura de grafos não direcionados, com ou sem pesos, representação por **lista** ou **matriz de adjacência**, BFS, DFS, distância, componentes conexas, estatísticas de grau, diâmetro (ingênuo, aproximado e exato) e **caminhos mínimos com Dijkstra** (com vetor ou com heap). Inclui o programa de linha de comando `grafos`, os programas `estudos` e `estudos_dijkstra` e scripts para os estudos de caso.
 
 ## Requisitos (WSL2 / Ubuntu)
 
@@ -20,7 +20,7 @@ cmake --build build -j
 ctest --test-dir build --output-on-failure
 ```
 
-São gerados `build/libgrafos.a`, `build/grafos`, `build/estudos` e `build/testes`. O `ctest` roda os testes da biblioteca (doctest) e os testes de ponta a ponta dos programas.
+São gerados `build/libgrafos.a`, `build/grafos`, `build/estudos`, `build/estudos_dijkstra` e `build/testes`. O `ctest` roda os testes da biblioteca (doctest) e os testes de ponta a ponta dos programas.
 
 Com AddressSanitizer e UBSan (mais lento):
 
@@ -43,6 +43,8 @@ Primeira linha: número de vértices `n`. Cada linha seguinte: uma aresta `u v`,
 1 5
 ```
 
+**Com pesos (Parte 2):** uma terceira coluna com o peso da aresta (número real, ex.: `1 2 0.1`, `3 4 -9.5`). A primeira linha de aresta decide: se tiver peso, todas precisam ter. Aresta repetida fica com o menor peso.
+
 ## Programa `grafos`
 
 ```bash
@@ -52,7 +54,11 @@ build/grafos bfs dados/grafo_1.txt --origem 1 [--repr lista|matriz] -o bfs.txt
 build/grafos dfs dados/grafo_1.txt --origem 1 [--repr lista|matriz] -o dfs.txt
 build/grafos distancia dados/grafo_1.txt 10 20 [--repr lista|matriz] [--caminho]
 build/grafos diametro dados/grafo_1.txt [--repr lista|matriz] [--ingenuo | --aproximado | --exato] [--limite 600]
+build/grafos dijkstra dados/grafo_W_3.txt --origem 10 [--fila heap|vetor] [--repr lista|matriz] \
+    [--destinos 20,30,40,50,60] [-o dijkstra.txt]
 ```
+
+- `dijkstra` usa o heap por padrão; imprime distância, número de arestas e caminho até cada destino, e com `-o` grava `vertice pai distancia` (não alcançados: `-1 infinito`). Grafo com peso negativo é recusado com mensagem. `distancia` continua contando arestas (ignora pesos).
 
 - Representação padrão: `lista`. `diametro` usa `--exato` por padrão, com limite de 1800 s.
 - Antes de carregar, o programa lê só o `n` e recusa (com erro) se a matriz, ou o mínimo da lista, não couber em 80% da memória disponível.
@@ -70,6 +76,11 @@ grafos::ArvoreBusca arvore = grafos::bfs(g, 1);
 int32_t d = grafos::distancia(g, 10, 20);           // -1 = infinito
 grafos::Diametro diam = grafos::diametro_exato(g, 600.0);
 grafos::escrever_arvore(arvore, "bfs.txt");
+
+grafos::Grafo w = grafos::carregar("dados/grafo_W_3.txt", grafos::Representacao::Lista);
+grafos::ResultadoDijkstra r = grafos::dijkstra(w, 10, grafos::FilaDijkstra::Heap);  // ou Vetor
+double d20 = r.dist[20 - 1];                         // +infinito se inalcancavel
+std::vector<int32_t> c = grafos::caminho(r, 20);     // 10 ... 20; vazio se inalcancavel
 ```
 
 Link com `grafos_lib` (CMake) ou `build/libgrafos.a`, com `include/` no caminho de headers.
@@ -105,6 +116,33 @@ build/estudos --grafo dados/grafo_1.txt --repr lista --saida resultados [--semen
 
 `--pausar` imprime o PID e espera Enter depois da carga, para conferir a memória com `top` ou `ps`.
 
+O `rodar_estudos.sh` ignora os arquivos da Parte 2 (`grafo_W_*` e `rede_*`).
+
+## Estudos de caso da Parte 2 (Dijkstra)
+
+1. Coloque em `dados/` os grafos com pesos (`grafo_W_3.txt`, ... ou `.txt.gz`) e a rede de colaboração (`rede_colaboracao.txt` e `rede_colaboracao_vertices.txt`).
+2. Compile em Release e feche programas pesados.
+3. Rode (cerca de 2,5 h com W_3, W_4 e W_5):
+
+   ```bash
+   scripts/rodar_estudos_dijkstra.sh
+   python3 scripts/consolidar_dijkstra.py
+   ```
+
+   - Resultados em `resultados/parte2/<grafo>_dijkstra.csv` e `resultados/parte2/rede_colaboracao_dijkstra.csv`; logs em `resultados/parte2/logs/`; tabelas em `resultados/parte2/tabelas_dijkstra.md`.
+   - Por grafo: distância e caminho de 10 a 20, 30, 40, 50 e 60; tempo médio do Dijkstra com heap (100 origens sorteadas) e com vetor (as primeiras k delas: W_3 100, W_4 10; no W_5 o tempo do vetor é estimado por uma execução parcial). O `k` de cada grafo fica na tabela no topo do script; grafos novos (W_6, W_7) usam a estimativa até ganharem uma entrada.
+   - Rede: distância e caminho (por nome) de Edsger W. Dijkstra a Alan M. Turing, J. B. Kruskal, Jon M. Kleinberg, Éva Tardos e Daniel R. Figueiredo.
+   - Como na Parte 1, CSVs existentes são pulados (dá para retomar).
+
+Para um único grafo:
+
+```bash
+build/estudos_dijkstra --grafo dados/grafo_W_3.txt --saida resultados/parte2 [--semente 42] \
+    [--k-heap 100] [--k-vetor 100] [--estimar-vetor 0.01]
+build/estudos_dijkstra --rede dados/rede_colaboracao.txt --nomes dados/rede_colaboracao_vertices.txt \
+    --saida resultados/parte2
+```
+
 ## Grafos sintéticos (`gerar_grafo`)
 
 Gera um grafo aleatório uniforme no formato da disciplina (m arestas com extremos distintos sorteados em 1..n; a semente torna o arquivo reprodutível):
@@ -125,8 +163,8 @@ build/gerar_grafo --n 1000000 --m 5000000 --semente 1 -o /tmp/grafos-sintetico/g
 include/grafos/   headers públicos (algoritmos template)
 src/              leitura, representações, escrita, utilitários de sistema
 app/              programa grafos
-estudos/          programa estudos
-scripts/          rodar_estudos.sh e consolidar.py
+estudos/          programas estudos e estudos_dijkstra
+scripts/          rodar_estudos(_dijkstra).sh e consolidar(_dijkstra).py
 tests/            testes doctest, testes dos programas e grafos de teste
 third_party/      doctest.h
 DECISOES.md       decisões de projeto

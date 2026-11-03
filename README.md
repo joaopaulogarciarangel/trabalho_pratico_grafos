@@ -122,7 +122,7 @@ O `rodar_estudos.sh` ignora os arquivos da Parte 2 (`grafo_W_*` e `rede_*`).
 
 1. Coloque em `dados/` os grafos com pesos (`grafo_W_3.txt`, ... ou `.txt.gz`) e a rede de colaboração (`rede_colaboracao.txt` e `rede_colaboracao_vertices.txt`).
 2. Compile em Release e feche programas pesados.
-3. Rode (cerca de 2,5 h com W_3, W_4 e W_5):
+3. Rode (cerca de 5 h com W_3 a W_7; o W_7 chega a ~6,7 GB de RAM, então feche os outros programas):
 
    ```bash
    scripts/rodar_estudos_dijkstra.sh
@@ -130,7 +130,7 @@ O `rodar_estudos.sh` ignora os arquivos da Parte 2 (`grafo_W_*` e `rede_*`).
    ```
 
    - Resultados em `resultados/parte2/<grafo>_dijkstra.csv` e `resultados/parte2/rede_colaboracao_dijkstra.csv`; logs em `resultados/parte2/logs/`; tabelas em `resultados/parte2/tabelas_dijkstra.md`.
-   - Por grafo: distância e caminho de 10 a 20, 30, 40, 50 e 60; tempo médio do Dijkstra com heap (100 origens sorteadas) e com vetor (as primeiras k delas: W_3 100, W_4 10; no W_5 o tempo do vetor é estimado por uma execução parcial). O `k` de cada grafo fica na tabela no topo do script; grafos novos (W_6, W_7) usam a estimativa até ganharem uma entrada.
+   - Por grafo: distância e caminho de 10 a 20, 30, 40, 50 e 60; tempo médio do Dijkstra com heap (100 origens sorteadas; 30 no W_7) e com vetor (as primeiras k delas: W_3 100, W_4 10; do W_5 ao W_7 o tempo do vetor é estimado por uma execução parcial). Os valores de cada grafo ficam nas tabelas no topo do script.
    - Rede: distância e caminho (por nome) de Edsger W. Dijkstra a Alan M. Turing, J. B. Kruskal, Jon M. Kleinberg, Éva Tardos e Daniel R. Figueiredo.
    - Como na Parte 1, CSVs existentes são pulados (dá para retomar).
 

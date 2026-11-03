@@ -122,7 +122,7 @@ O `rodar_estudos.sh` ignora os arquivos da Parte 2 (`grafo_W_*` e `rede_*`).
 
 1. Coloque em `dados/` os grafos com pesos (`grafo_W_3.txt`, ... ou `.txt.gz`) e a rede de colaboração (`rede_colaboracao.txt` e `rede_colaboracao_vertices.txt`).
 2. Compile em Release e feche programas pesados.
-3. Rode (cerca de 5 h com W_3 a W_7; o W_7 chega a ~6,7 GB de RAM, então feche os outros programas):
+3. Rode (cerca de 5 h com W_3 a W_7; o W_7 chega a ~6,4 GB de RAM, então feche os outros programas):
 
    ```bash
    scripts/rodar_estudos_dijkstra.sh

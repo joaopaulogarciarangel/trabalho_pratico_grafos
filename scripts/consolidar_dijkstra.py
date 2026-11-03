@@ -49,7 +49,9 @@ def segundos(texto):
         return f"{s * 1000:.1f} ms".replace(".", ",")
     if s < 7200:
         return f"{s:.2f} s".replace(".", ",")
-    return f"{s / 3600:.1f} h".replace(".", ",")
+    if s < 48 * 3600:
+        return f"{s / 3600:.1f} h".replace(".", ",")
+    return f"{s / 86400:.1f} dias".replace(".", ",")
 
 
 def decimal(texto, casas=1):

@@ -1,0 +1,62 @@
+
+[execucao]
+  data_hora: 2026-11-03 12:50:48
+  grafo: rede_colaboracao
+  arquivo: /home/jpgar/grafos/dados/rede_colaboracao.txt
+  arquivo_nomes: /home/jpgar/grafos/dados/rede_colaboracao_vertices.txt
+  representacao: lista
+  cpu: AMD Ryzen 5 5500
+  memtotal_mb: 7874.637
+  compilador: g++ 15.2.0
+
+[carga]
+  n: 722385
+  m: 2272543
+  linhas_aresta: 2272543
+  lacos_ignorados: 0
+  repetidas_ignoradas: 0
+  ponderado: sim
+  pesos_negativos: nao
+  rss_base_mb: 4.422
+  rss_depois_mb: 113.902
+  estrutura_mb: 87.838
+  tempo_carga_s: 0.535695
+  nomes_lidos: 722385
+
+[estudo P2-3: rede de colaboracao]
+  origem_id: 2722
+  origem_nome: Edsger W. Dijkstra
+  dijkstra_heap_s: 0.374061
+  explorados: 576309
+  rede_turing_nome: Alan M. Turing
+  rede_turing_id: 11365
+  rede_turing_distancia: infinito
+  rede_turing_arestas: -
+  rede_turing_caminho: -
+  rede_turing_caminho_ids: -
+  rede_kruskal_nome: J. B. Kruskal
+  rede_kruskal_id: 471365
+  rede_kruskal_distancia: 3.48036845488905
+  rede_kruskal_arestas: 8
+  rede_kruskal_caminho: Edsger W. Dijkstra -> John R. Rice -> Dan C. Marinescu -> Howard Jay Siegel -> Edwin K. P. Chong -> Ness B. Shroff -> R. Srikant -> Albert G. Greenberg -> J. B. Kruskal
+  rede_kruskal_caminho_ids: 2722 9490 7200 10343 646765 490368 10746 3655 471365
+  rede_kleinberg_nome: Jon M. Kleinberg
+  rede_kleinberg_id: 5709
+  rede_kleinberg_distancia: 2.7069936175564644
+  rede_kleinberg_arestas: 9
+  rede_kleinberg_caminho: Edsger W. Dijkstra -> A. J. M. van Gasteren -> Gerard Tel -> Hans L. Bodlaender -> Dimitrios M. Thilikos -> Prabhakar Ragde -> Avi Wigderson -> Eli Upfal -> Prabhakar Raghavan -> Jon M. Kleinberg
+  rede_kleinberg_caminho_ids: 2722 217250 11456 768 11448 101826 12242 11834 9608 5709
+  rede_tardos_nome: Éva Tardos
+  rede_tardos_id: 11386
+  rede_tardos_distancia: 2.7535141793573357
+  rede_tardos_arestas: 11
+  rede_tardos_caminho: Edsger W. Dijkstra -> A. J. M. van Gasteren -> Gerard Tel -> Hans L. Bodlaender -> Jan van Leeuwen -> Mark H. Overmars -> Micha Sharir -> Haim Kaplan -> Robert Endre Tarjan -> Andrew V. Goldberg -> Serge A. Plotkin -> Éva Tardos
+  rede_tardos_caminho_ids: 2722 217250 11456 768 6479 8528 10572 357587 11649 3694 318911 11386
+  rede_figueiredo_nome: Daniel R. Figueiredo
+  rede_figueiredo_id: 343930
+  rede_figueiredo_distancia: 2.9428308695367855
+  rede_figueiredo_arestas: 8
+  rede_figueiredo_caminho: Edsger W. Dijkstra -> John R. Rice -> Dan C. Marinescu -> Chuang Lin -> Bo Li -> Y. Thomas Hou -> Zhi-Li Zhang -> Donald F. Towsley -> Daniel R. Figueiredo
+  rede_figueiredo_caminho_ids: 2722 9490 7200 391667 371226 4379 68773 11466 343930
+
+CSV: /home/jpgar/grafos/resultados/parte2/rede_colaboracao_dijkstra.csv

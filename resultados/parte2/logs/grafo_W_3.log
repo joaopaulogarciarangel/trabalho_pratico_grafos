@@ -1,0 +1,157 @@
+
+[execucao]
+  data_hora: 2026-10-22 11:30:13
+  grafo: grafo_W_3
+  arquivo: /home/jpgar/grafos/dados/grafo_W_3.txt
+  representacao: lista
+  semente: 42
+  k_heap: 100
+  k_vetor: 100
+  cpu: AMD Ryzen 5 5500
+  memtotal_mb: 7874.641
+  compilador: g++ 15.2.0
+
+[carga]
+  n: 100000
+  m: 6099868
+  linhas_aresta: 6099941
+  lacos_ignorados: 0
+  repetidas_ignoradas: 73
+  ponderado: sim
+  pesos_negativos: nao
+  rss_base_mb: 4.453
+  rss_depois_mb: 151.551
+  estrutura_mb: 144.574
+  tempo_carga_s: 1.768010
+
+[estudo P2-1: distancias e caminhos a partir de 10]
+  dist_10_20: 0.8
+  arestas_10_20: 18
+  caminho_10_20: 10 2858 35293 3905 24445 39345 61279 41321 70540 26049 84450 68904 87862 86778 27694 16608 86355 15760 20
+  dist_10_30: 0.89
+  arestas_10_30: 14
+  caminho_10_30: 10 2858 35293 96094 85187 53177 64898 87087 77935 42304 78071 93985 27642 26151 30
+  dist_10_40: 0.8400000000000001
+  arestas_10_40: 10
+  caminho_10_40: 10 2858 35293 3905 24445 86286 14327 19697 15930 46307 40
+  dist_10_50: 0.8700000000000001
+  arestas_10_50: 9
+  caminho_10_50: 10 56663 84437 19040 82510 17622 94992 70948 19878 50
+  dist_10_60: 0.9700000000000001
+  arestas_10_60: 16
+  caminho_10_60: 10 2858 35293 3905 24445 89584 2874 99253 66532 33719 96654 75728 79865 74717 59399 8718 60
+
+[estudo P2-2: tempo do Dijkstra (heap x vetor)]
+  vetor 1/100 (origem 20407): 4.421 s
+  vetor 2/100 (origem 94825): 4.420 s
+  vetor 3/100 (origem 41451): 4.486 s
+  vetor 4/100 (origem 55663): 4.422 s
+  vetor 5/100 (origem 39382): 4.310 s
+  vetor 6/100 (origem 78429): 4.220 s
+  vetor 7/100 (origem 13537): 4.279 s
+  vetor 8/100 (origem 66145): 4.457 s
+  vetor 9/100 (origem 82551): 4.381 s
+  vetor 10/100 (origem 24258): 4.065 s
+  vetor 11/100 (origem 95596): 4.002 s
+  vetor 12/100 (origem 74663): 4.247 s
+  vetor 13/100 (origem 70393): 4.410 s
+  vetor 14/100 (origem 11407): 4.610 s
+  vetor 15/100 (origem 87310): 4.347 s
+  vetor 16/100 (origem 72393): 5.161 s
+  vetor 17/100 (origem 42359): 4.288 s
+  vetor 18/100 (origem 52211): 4.600 s
+  vetor 19/100 (origem 28610): 4.555 s
+  vetor 20/100 (origem 29352): 4.095 s
+  vetor 21/100 (origem 91660): 4.082 s
+  vetor 22/100 (origem 37075): 4.204 s
+  vetor 23/100 (origem 66426): 5.558 s
+  vetor 24/100 (origem 32330): 5.016 s
+  vetor 25/100 (origem 82790): 4.260 s
+  vetor 26/100 (origem 5461): 4.357 s
+  vetor 27/100 (origem 48554): 4.400 s
+  vetor 28/100 (origem 87373): 4.257 s
+  vetor 29/100 (origem 56631): 4.011 s
+  vetor 30/100 (origem 13141): 4.082 s
+  vetor 31/100 (origem 27560): 4.040 s
+  vetor 32/100 (origem 31384): 4.237 s
+  vetor 33/100 (origem 9003): 4.079 s
+  vetor 34/100 (origem 77789): 5.208 s
+  vetor 35/100 (origem 38317): 5.049 s
+  vetor 36/100 (origem 40168): 4.349 s
+  vetor 37/100 (origem 96977): 4.382 s
+  vetor 38/100 (origem 42847): 4.293 s
+  vetor 39/100 (origem 32313): 4.377 s
+  vetor 40/100 (origem 27908): 4.195 s
+  vetor 41/100 (origem 76152): 4.328 s
+  vetor 42/100 (origem 24785): 4.320 s
+  vetor 43/100 (origem 67286): 4.668 s
+  vetor 44/100 (origem 73722): 4.315 s
+  vetor 45/100 (origem 38297): 4.258 s
+  vetor 46/100 (origem 59266): 4.318 s
+  vetor 47/100 (origem 71663): 4.252 s
+  vetor 48/100 (origem 56964): 4.355 s
+  vetor 49/100 (origem 48826): 4.263 s
+  vetor 50/100 (origem 77695): 4.030 s
+  vetor 51/100 (origem 43529): 4.086 s
+  vetor 52/100 (origem 77216): 4.131 s
+  vetor 53/100 (origem 99909): 4.158 s
+  vetor 54/100 (origem 74682): 4.073 s
+  vetor 55/100 (origem 92468): 4.020 s
+  vetor 56/100 (origem 78551): 4.145 s
+  vetor 57/100 (origem 70578): 4.070 s
+  vetor 58/100 (origem 30366): 4.166 s
+  vetor 59/100 (origem 42364): 4.319 s
+  vetor 60/100 (origem 54153): 4.080 s
+  vetor 61/100 (origem 20886): 4.084 s
+  vetor 62/100 (origem 69069): 4.064 s
+  vetor 63/100 (origem 99282): 4.049 s
+  vetor 64/100 (origem 28312): 4.085 s
+  vetor 65/100 (origem 78984): 4.075 s
+  vetor 66/100 (origem 42382): 4.299 s
+  vetor 67/100 (origem 89954): 4.301 s
+  vetor 68/100 (origem 17806): 4.282 s
+  vetor 69/100 (origem 88991): 4.070 s
+  vetor 70/100 (origem 70810): 4.014 s
+  vetor 71/100 (origem 52422): 4.080 s
+  vetor 72/100 (origem 87475): 4.232 s
+  vetor 73/100 (origem 46022): 4.196 s
+  vetor 74/100 (origem 28598): 4.112 s
+  vetor 75/100 (origem 18413): 4.030 s
+  vetor 76/100 (origem 25969): 4.084 s
+  vetor 77/100 (origem 28974): 4.148 s
+  vetor 78/100 (origem 9061): 4.149 s
+  vetor 79/100 (origem 32341): 4.026 s
+  vetor 80/100 (origem 81769): 4.027 s
+  vetor 81/100 (origem 83925): 4.041 s
+  vetor 82/100 (origem 24858): 4.049 s
+  vetor 83/100 (origem 84248): 4.033 s
+  vetor 84/100 (origem 33891): 4.031 s
+  vetor 85/100 (origem 15544): 4.171 s
+  vetor 86/100 (origem 90765): 4.087 s
+  vetor 87/100 (origem 73970): 4.101 s
+  vetor 88/100 (origem 44363): 4.062 s
+  vetor 89/100 (origem 55696): 4.163 s
+  vetor 90/100 (origem 11416): 4.124 s
+  vetor 91/100 (origem 21058): 4.082 s
+  vetor 92/100 (origem 7148): 4.023 s
+  vetor 93/100 (origem 56308): 3.987 s
+  vetor 94/100 (origem 79324): 4.116 s
+  vetor 95/100 (origem 98791): 4.110 s
+  vetor 96/100 (origem 7160): 4.049 s
+  vetor 97/100 (origem 5029): 4.066 s
+  vetor 98/100 (origem 4825): 4.358 s
+  vetor 99/100 (origem 5383): 4.525 s
+  vetor 100/100 (origem 88114): 4.256 s
+  heap_execucoes: 100
+  heap_media_s: 1.360568689e-01
+  heap_desvio_s: 1.127663742e-02
+  vetor_execucoes: 100
+  heap_media_mesmas_origens_s: 1.360568689e-01
+  heap_desvio_mesmas_origens_s: 1.127663742e-02
+  vetor_media_s: 4.254073198e+00
+  vetor_desvio_s: 2.711753650e-01
+  razao_vetor_heap: 31.3
+  conferencia_vetor_heap: ok
+  origens: 20407 94825 41451 55663 39382 78429 13537 66145 82551 24258 95596 74663 70393 11407 87310 72393 42359 52211 28610 29352 91660 37075 66426 32330 82790 5461 48554 87373 56631 13141 27560 31384 9003 77789 38317 40168 96977 42847 32313 27908 76152 24785 67286 73722 38297 59266 71663 56964 48826 77695 43529 77216 99909 74682 92468 78551 70578 30366 42364 54153 20886 69069 99282 28312 78984 42382 89954 17806 88991 70810 52422 87475 46022 28598 18413 25969 28974 9061 32341 81769 83925 24858 84248 33891 15544 90765 73970 44363 55696 11416 21058 7148 56308 79324 98791 7160 5029 4825 5383 88114
+
+CSV: /home/jpgar/grafos/resultados/parte2/grafo_W_3_dijkstra.csv

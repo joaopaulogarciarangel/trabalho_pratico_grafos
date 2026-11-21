@@ -58,7 +58,7 @@
   - **heap:** heap binário mínimo próprio, em vetor (aula 9), **indexado** por `pos[v]`: achar `v` é O(1), então `diminuir_chave` sobe o elemento em O(log n) → O((n + m) log n). Só os vértices descobertos entram no heap, e cada vértice ocupa no máximo uma posição.
   - **Por que não a "saída fácil"** (reinserir o vértice a cada melhora e ignorar, ao extrair, quem já saiu — o que `std::priority_queue` obriga, pois não muda chaves): o heap passa a ter uma entrada por relaxamento bem-sucedido, até O(m) em vez de O(n). O custo continua O(m log n) (log m ≤ 2 log n), mas a memória do heap e o número de extrações crescem com m — no W_6 seriam até ~73 milhões de entradas contra 10 milhões de vértices — e cada entrada obsoleta ainda paga uma extração O(log m).
 - **Desempate por (distância, id)** nas duas fronteiras e relaxamento estrito (`<`), com vizinhos em ordem crescente: vetor e heap produzem exatamente as mesmas distâncias, pais e ordem de exploração (conferido nos testes e em cada medição).
-- **Pesos negativos:** recusados antes de qualquer alocação ("a biblioteca ainda nao implementa caminhos minimos com pesos negativos"); peso zero é aceito.
+- **Pesos negativos em Dijkstra:** recusados antes de qualquer alocação; peso zero é aceito. Para pesos negativos, usar Bellman-Ford.
 - **Resultado:** distância, pai (árvore de caminhos mínimos) e ordem de exploração por vértice; `caminho(destino)` sobe pelos pais. Distâncias gravadas na forma mais curta que reconstrói o `double`.
 - **Rede de colaboração:** nomes lidos de `id,nome` cortando na primeira vírgula (há nomes com vírgula); busca exata em UTF-8 (`Éva Tardos`), recusando nome ausente ou ambíguo.
 - **Tempo (P2-2):** 100 origens sorteadas como na Parte 1 (semente 42); uma execução de aquecimento por fila; cada chamada cronometrada com `steady_clock`. O vetor roda nas **primeiras k** dessas origens, com k fixo por grafo para caber em cerca de 1,5 h (W_3: 100, W_4: 10); a tabela compara com a média do heap **nas mesmas origens**. No W_5 e no W_6 (n = 10⁷), uma execução do vetor levaria cerca de um dia, e no W_7 (n = 5·10⁷) semanas: ela é interrompida após 1% dos vértices explorados (0,01% no W_7) e extrapolada linearmente (cada extração custa uma varredura de n), registrada como **estimativa**. No W_7 o heap usa 30 origens (~90 s cada).
@@ -66,8 +66,19 @@
 
 ## Preparação para a parte 3
 
-- `carregar` já recebe `direcionado` (hoje recusa) e trabalha com arcos (cada aresta gera (u,v) e (v,u)).
+- `carregar` já recebia `direcionado`; na Parte 3 esse modo passou a aceitar arcos apenas no sentido indicado.
 - Novos algoritmos sobre grafos com peso só precisam de `para_cada_vizinho_com_peso`, disponível nas duas representações.
+
+## Ferramentas
+
+## Parte 3: direção, ciclos negativos e limites
+
+- **Direção.** O parâmetro público `direcionado` vale para lista e matriz. Em modo dirigido cada linha insere só `u -> v`; em modo antigo continua inserindo ambos os sentidos. Duplicatas conservam o menor peso. Laços dirigidos são preservados para detectar ciclo negativo; o descarte de laços do modo não dirigido permanece por compatibilidade.
+- **Bellman-Ford por destino.** Construímos adjacências de entrada para relaxar `d[u] > peso(u,v) + d[v]` a partir do destino. `sucessor[u] = v` compõe a árvore de caminhos até ele. Distância `+inf` significa inalcançável. A detecção global usa superorigem virtual de custo zero e fila de relaxamento; um ciclo no grafo de predecessores com soma negativa comprova ciclo negativo. Se o grafo é fortemente conexo, um único ciclo negativo torna todos os pares indefinidos. Nos demais casos, a rodada extra e uma busca reversa marcam com `-inf` as origens afetadas. O flag global é separado do flag que afeta o destino.
+- **Duas otimizações do Bellman-Ford.** (1) Encerrar quando uma rodada não altera distâncias. (2) Relaxar apenas os vértices que mudaram na rodada anterior, evitando varrer arcos não relevantes. A primeira aparece em resumo antigo; a consulta aos slides disponíveis não permitiu confirmar que a segunda foi exatamente a ensinada em aula. A escolha é tecnicamente fundamentada e preserva as mesmas relações de relaxamento. O limite de pior caso continua `O(nm)` e o espaço adicional é `O(n+m)`.
+- **Floyd-Warshall.** Distâncias são atualizadas no próprio bloco `n*n`, em vez de guardar uma matriz por estágio. Essa otimização está explícita na Aula 20 de Teoria dos Grafos (slides de 2013, seção “Algoritmo Melhorado”). Um segundo bloco `n*n` de inteiros guarda o próximo vértice para reconstruir caminhos e árvores de origem. São `12n²` bytes para os dois blocos, além do grafo. A diagonal negativa detecta ciclo; pares que podem atravessar tal ciclo recebem `-inf`. Tempo `O(n³)`.
+- **Viabilidade.** A interface barra Floyd-Warshall acima de `10¹⁰` iterações por padrão, liberáveis com `--forcar`, e compara o bloco `12n²` com 80% da RAM disponível. O roteiro experimental também perfila o `.gz` antes de descompactar e registrar carregamentos inviáveis. O limite de trabalho é preventivo, não uma medição. Os casos W1–W5 exigem tratar resultados não calculados com marcação explícita.
+- **Validação.** Os testes anteriores permanecem. Os novos testes verificam direção, laços, paralelos, pesos positivos/negativos/zero, caminhos, ciclos e 100 grafos dirigidos aleatórios pequenos contra Floyd de três matrizes como referência independente. As medições do estudo excluem leitura, escrita e descompactação, repetindo cada operação cronometrada dez vezes.
 
 ## Ferramentas
 

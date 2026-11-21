@@ -42,6 +42,10 @@ bool Grafo::tem_peso_negativo() const {
     return visitar([](const auto& g) { return g.tem_peso_negativo(); });
 }
 
+bool Grafo::direcionado() const {
+    return visitar([](const auto& g) { return g.direcionado(); });
+}
+
 double Grafo::peso(int32_t u, int32_t v) const {
     if (!sao_vizinhos(u, v)) {
         throw ErroGrafo("vertices " + std::to_string(u) + " e " + std::to_string(v) + " nao sao vizinhos");
@@ -61,10 +65,9 @@ Grafo construir_grafo(const ArestasLidas& arestas, Representacao rep, InfoLeitur
 }
 
 Grafo carregar(const std::string& caminho, Representacao rep, bool direcionado, InfoLeitura* info) {
-    if (direcionado) throw ErroGrafo("grafos direcionados ainda nao suportados");
     // A lista temporaria de arestas vive so dentro da lambda; e liberada antes do malloc_trim.
     Grafo g = [&] {
-        ArestasLidas arestas = ler_arestas(caminho);
+        ArestasLidas arestas = ler_arestas(caminho, direcionado);
         return construir_grafo(arestas, rep, info);
     }();
     devolver_memoria_ao_sistema();

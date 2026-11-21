@@ -9,6 +9,7 @@ GrafoLista GrafoLista::construir(const ArestasLidas& arestas) {
     g.n_ = arestas.n;
     g.ponderado_ = arestas.ponderado;
     g.tem_peso_negativo_ = arestas.tem_peso_negativo;
+    g.direcionado_ = arestas.direcionado;
     size_t n = static_cast<size_t>(arestas.n);
     const size_t total = arestas.origem.size();
 
@@ -16,7 +17,7 @@ GrafoLista GrafoLista::construir(const ArestasLidas& arestas) {
     g.grau_.assign(n, 0);
     for (size_t i = 0; i < total; ++i) {
         ++g.grau_[static_cast<size_t>(arestas.origem[i])];
-        ++g.grau_[static_cast<size_t>(arestas.destino[i])];
+        if (!g.direcionado_) ++g.grau_[static_cast<size_t>(arestas.destino[i])];
     }
     g.adjacencia_.resize(n);
     for (size_t v = 0; v < n; ++v) g.adjacencia_[v].reserve(static_cast<size_t>(g.grau_[v]));
@@ -28,10 +29,10 @@ GrafoLista GrafoLista::construir(const ArestasLidas& arestas) {
         int32_t u = arestas.origem[i];
         int32_t v = arestas.destino[i];
         g.adjacencia_[static_cast<size_t>(u)].push_back(v);
-        g.adjacencia_[static_cast<size_t>(v)].push_back(u);
+        if (!g.direcionado_) g.adjacencia_[static_cast<size_t>(v)].push_back(u);
         if (g.ponderado_) {
             g.pesos_[static_cast<size_t>(u)].push_back(arestas.peso[i]);
-            g.pesos_[static_cast<size_t>(v)].push_back(arestas.peso[i]);
+            if (!g.direcionado_) g.pesos_[static_cast<size_t>(v)].push_back(arestas.peso[i]);
         }
     }
 
@@ -61,7 +62,7 @@ GrafoLista GrafoLista::construir(const ArestasLidas& arestas) {
         g.grau_[v] = static_cast<int32_t>(viz.size());
         soma_graus += static_cast<int64_t>(viz.size());
     }
-    g.m_ = soma_graus / 2;
+    g.m_ = g.direcionado_ ? soma_graus : soma_graus / 2;
     return g;
 }
 

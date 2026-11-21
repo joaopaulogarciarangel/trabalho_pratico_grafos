@@ -15,6 +15,10 @@
 
 #include "grafos/grafos.hpp"
 
+#ifndef GRAFOS_DIR_TESTES_DADOS
+#define GRAFOS_DIR_TESTES_DADOS "tests/dados"
+#endif
+
 namespace teste {
 
 // Diretorio temporario exclusivo do processo de testes, apagado ao fim do objeto.

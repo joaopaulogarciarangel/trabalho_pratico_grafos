@@ -24,14 +24,15 @@ struct ArestasLidas {
     std::vector<double> peso;
     bool ponderado = false;
     bool tem_peso_negativo = false;  // alguma aresta (nao laco) com peso < 0
+    bool direcionado = false;
     int64_t linhas_aresta = 0;
     int64_t lacos_ignorados = 0;
 };
 
-ArestasLidas parsear_arestas(const char* dados, size_t tamanho);
+ArestasLidas parsear_arestas(const char* dados, size_t tamanho, bool direcionado = false);
 
 // Le o arquivo inteiro para um buffer, parseia e libera o buffer antes de retornar.
-ArestasLidas ler_arestas(const std::string& caminho);
+ArestasLidas ler_arestas(const std::string& caminho, bool direcionado = false);
 
 // Devolve ao sistema a memoria livre do heap (malloc_trim na glibc).
 void devolver_memoria_ao_sistema();

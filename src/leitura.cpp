@@ -101,8 +101,9 @@ double ler_peso(const Token& t, int64_t linha) {
 
 }  // namespace
 
-ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
+ArestasLidas parsear_arestas(const char* dados, size_t tamanho, bool direcionado) {
     ArestasLidas r;
+    r.direcionado = direcionado;
     const char* p = dados;
     const char* const fim = dados + tamanho;
     int64_t linha = 0;
@@ -153,7 +154,7 @@ ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
             w = ler_peso(tok[2], linha);
         }
         ++r.linhas_aresta;
-        if (u == v) {
+        if (u == v && !direcionado) {
             ++r.lacos_ignorados;
             continue;
         }
@@ -167,7 +168,7 @@ ArestasLidas parsear_arestas(const char* dados, size_t tamanho) {
     return r;
 }
 
-ArestasLidas ler_arestas(const std::string& caminho) {
+ArestasLidas ler_arestas(const std::string& caminho, bool direcionado) {
     std::unique_ptr<std::FILE, int (*)(std::FILE*)> arquivo(std::fopen(caminho.c_str(), "rb"), &std::fclose);
     if (!arquivo) {
         throw ErroGrafo("nao foi possivel abrir '" + caminho + "': " + std::strerror(errno));
@@ -190,7 +191,7 @@ ArestasLidas ler_arestas(const std::string& caminho) {
     if (std::ferror(arquivo.get())) throw ErroGrafo(erro_leitura + caminho + "'");
     arquivo.reset();
 
-    ArestasLidas arestas = parsear_arestas(buffer.get(), lidos);
+    ArestasLidas arestas = parsear_arestas(buffer.get(), lidos, direcionado);
     buffer.reset();
     return arestas;
 }

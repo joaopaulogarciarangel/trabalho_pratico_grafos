@@ -101,9 +101,9 @@ TEST_CASE("leitura: n no limite de int32_t e aceito pelo parser") {
 
 TEST_CASE("carregar: arquivo inexistente e grafo direcionado") {
     CHECK_THROWS_AS(grafos::carregar(teste::caminho_dados("nao_existe.txt"), Representacao::Lista), ErroGrafo);
-    CHECK_THROWS_WITH_AS(
-        grafos::carregar(teste::caminho_dados("figura1.txt"), Representacao::Lista, true),
-        "grafos direcionados ainda nao suportados", ErroGrafo);
+    grafos::Grafo g = grafos::carregar(teste::caminho_dados("figura1.txt"), Representacao::Lista, true);
+    CHECK(g.direcionado());
+    CHECK(g.m() == 5);
 }
 
 TEST_CASE("Grafo: vertice fora de 1..n na API publica") {

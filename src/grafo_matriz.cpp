@@ -15,6 +15,7 @@ GrafoMatriz GrafoMatriz::construir(const ArestasLidas& arestas) {
     g.n_ = arestas.n;
     g.ponderado_ = arestas.ponderado;
     g.tem_peso_negativo_ = arestas.tem_peso_negativo;
+    g.direcionado_ = arestas.direcionado;
     size_t n = static_cast<size_t>(arestas.n);
     g.palavras_ = (n + 63) / 64;
     g.bits_.assign(n * g.palavras_, 0);
@@ -32,13 +33,17 @@ GrafoMatriz GrafoMatriz::construir(const ArestasLidas& arestas) {
         // Conta m e graus so quando o bit e ligado pela primeira vez: repeticoes somem aqui.
         if ((palavra_uv & mascara_v) == 0) {
             palavra_uv |= mascara_v;
-            g.bits_[static_cast<size_t>(v) * g.palavras_ + static_cast<size_t>(u >> 6)] |= uint64_t{1} << (u & 63);
+            if (!g.direcionado_) g.bits_[static_cast<size_t>(v) * g.palavras_ + static_cast<size_t>(u >> 6)] |= uint64_t{1} << (u & 63);
             ++g.grau_[static_cast<size_t>(u)];
-            ++g.grau_[static_cast<size_t>(v)];
+            if (!g.direcionado_) ++g.grau_[static_cast<size_t>(v)];
             ++g.m_;
-            if (g.ponderado_) g.pesos_[uv] = g.pesos_[vu] = arestas.peso[i];
+            if (g.ponderado_) {
+                g.pesos_[uv] = arestas.peso[i];
+                if (!g.direcionado_) g.pesos_[vu] = arestas.peso[i];
+            }
         } else if (g.ponderado_ && arestas.peso[i] < g.pesos_[uv]) {  // repetida: fica o menor peso
-            g.pesos_[uv] = g.pesos_[vu] = arestas.peso[i];
+            g.pesos_[uv] = arestas.peso[i];
+            if (!g.direcionado_) g.pesos_[vu] = arestas.peso[i];
         }
     }
     return g;

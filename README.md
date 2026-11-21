@@ -159,6 +159,73 @@ build/gerar_grafo --n 1000000 --m 5000000 --semente 1 -o /tmp/grafos-sintetico/g
 
 ## Organização
 
+## Parte 3: grafos direcionados, Bellman-Ford e Floyd-Warshall
+
+A Parte 3 preserva o comportamento não direcionado por padrão. Passe `--direcionado`
+para interpretar cada linha `u v peso` como um único arco `u -> v`. A lista e a
+matriz respeitam esse sentido; BFS, DFS e os dois Dijkstras percorrem apenas
+arcos de saída. Dijkstra continua exigindo pesos não negativos. Arcos paralelos
+ficam com o menor peso; laços em grafos direcionados são mantidos, inclusive
+os negativos.
+
+Bellman-Ford recebe um **destino** e devolve distâncias de todos os vértices até
+ele, sucessores para os caminhos e dois indicadores de ciclo negativo: em
+qualquer componente e afetando o destino. Ele percorre os arcos na direção
+inversa durante o relaxamento. Floyd-Warshall usa uma única matriz de
+distâncias e outra de próximos vértices, totalizando `12*n*n` bytes para esses
+dois blocos. `+inf` indica ausência de caminho e `-inf` indica distância
+indefinida por ciclo negativo alcançável. A rotina `arvore_origem` reconstrói
+os pais a partir da matriz de próximos vértices.
+
+Exemplos após `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release` e
+`cmake --build build -j`:
+
+```bash
+build/grafos bfs dados/exemplo.txt --origem 10 --direcionado -o bfs.txt
+build/grafos dijkstra dados/exemplo.txt --origem 10 --direcionado --destinos 20,30
+build/grafos bellman-ford dados/exemplo.txt --destino 100 --direcionado --origem 10 -o arvore.txt
+build/grafos floyd-warshall dados/pequeno.txt --direcionado --origem 10 --destino 20
+ctest --test-dir build --output-on-failure
+```
+
+No Windows com MSYS2 UCRT64, `powershell -File scripts/build_windows.ps1 -Test`
+gera os executáveis e executa os testes. Floyd-Warshall no CLI barra por padrão
+instâncias acima de 10 bilhões de iterações cúbicas; `--forcar` permite uma
+execução deliberada quando houver recursos. A checagem de memória permanece.
+
+Para reproduzir os estudos, passe os cinco `.txt.gz` fornecidos ao script, na
+ordem desejada. Ele inspeciona os arquivos compactados, estima o pico de RAM,
+executa dez repetições apenas quando a carga é viável e grava um perfil e um
+CSV por grafo em `resultados/parte3/`:
+
+```bash
+python3 scripts/rodar_parte3.py dados/grafo_W_{1,2,3,4,5}.txt.gz \
+  --executavel build/estudos_parte3 --saida resultados/parte3
+```
+
+O relógio envolve só cada chamada do algoritmo; leitura, descompactação e
+escrita ficam fora da medição. O estudo de Bellman-Ford por destino 100 e os
+25 pares do conjunto `{10,20,30,40,50}` são registrados separadamente. A
+comparação de todos os pares só é executada abaixo dos limites preventivos de
+memória e trabalho. Uma execução pulada é indicada explicitamente no CSV, sem
+substituir medição por estimativa. O perfil dos dados registra também peso
+negativo e laço. Os arquivos de caso não entram no repositório.
+
+`resultados/parte3/` contém as medições obtidas neste ambiente; os arquivos
+`grafo_W_*.csv` precisam ser interpretados junto com `perfil.csv` e com as
+limitações descritas no relatório da Parte 3.
+
+Para validar o circuito de comparação em uma instância pequena e reproduzível:
+
+```bash
+python3 scripts/gerar_validacao_parte3.py /tmp/validacao_100.txt
+build/estudos_parte3 /tmp/validacao_100.txt 10 > resultados/parte3/validacao_100.csv
+```
+
+Essa instância sintética não substitui qualquer um dos cinco casos exigidos.
+
+## Organização
+
 ```
 include/grafos/   headers públicos (algoritmos template)
 src/              leitura, representações, escrita, utilitários de sistema

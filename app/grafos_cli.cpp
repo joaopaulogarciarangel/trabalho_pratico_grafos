@@ -1,4 +1,4 @@
-// Programa de linha de comando `grafos`: estatisticas, BFS, DFS, distancia, diametro e Dijkstra.
+// Programa de linha de comando da biblioteca de grafos.
 
 #include <charconv>
 #include <chrono>
@@ -30,9 +30,14 @@ const char* const AJUDA = R"(uso:
                   [--destinos v1,v2,...] [-o <saida>]
       caminhos minimos com pesos a partir de v (padrao: --fila heap); imprime distancia e
       caminho ate cada destino e, com -o, grava a arvore (vertice pai distancia)
+  grafos bellman-ford <arquivo> --destino <v> [--direcionado] [--origem <v>]
+      distancias e caminhos de todos os vertices ate v; -o grava (vertice sucessor distancia)
+  grafos floyd-warshall <arquivo> [--direcionado] [--origem <v>] [--destino <v>] [--forcar]
+      distancias entre todos os pares; com origem e destino imprime um caminho
+      --forcar libera o limite preventivo de 10 bilhoes de iteracoes cubicas
   grafos --help
 
-Vertices numerados de 1 a n. Representacao padrao: lista.
+Vertices numerados de 1 a n. Representacao padrao: lista. --direcionado vale para todos os comandos.
 )";
 
 class ErroUso : public std::runtime_error {
@@ -46,11 +51,14 @@ struct Opcoes {
     std::string repr = "lista";
     std::optional<std::string> saida;
     std::optional<std::string> origem;
+    std::optional<std::string> destino;
     std::optional<std::string> limite;
     std::optional<std::string> fila;
     std::optional<std::string> destinos;
     std::vector<std::string> algoritmos;
     bool caminho = false;
+    bool direcionado = false;
+    bool forcar = false;
 };
 
 Opcoes ler_opcoes(int argc, char** argv) {
@@ -68,6 +76,12 @@ Opcoes ler_opcoes(int argc, char** argv) {
             o.saida = valor(a);
         } else if (a == "--origem") {
             o.origem = valor(a);
+        } else if (a == "--destino") {
+            o.destino = valor(a);
+        } else if (a == "--direcionado") {
+            o.direcionado = true;
+        } else if (a == "--forcar") {
+            o.forcar = true;
         } else if (a == "--limite") {
             o.limite = valor(a);
         } else if (a == "--fila") {
@@ -118,7 +132,7 @@ std::string formatar_gb(double bytes) {
     return grafos::formatar_fixo(bytes / (1024.0 * 1024.0 * 1024.0), 1) + " GB";
 }
 
-grafos::Grafo carregar_com_resumo(const std::string& arquivo, const std::string& repr_texto) {
+grafos::Grafo carregar_com_resumo(const std::string& arquivo, const std::string& repr_texto, bool direcionado) {
     grafos::Representacao rep;
     if (repr_texto == "lista") {
         rep = grafos::Representacao::Lista;
@@ -141,7 +155,7 @@ grafos::Grafo carregar_com_resumo(const std::string& arquivo, const std::string&
                                 (matriz ? " Use --repr lista." : ""));
     }
     grafos::InfoLeitura info;
-    grafos::Grafo g = grafos::carregar(arquivo, rep, false, &info);
+    grafos::Grafo g = grafos::carregar(arquivo, rep, direcionado, &info);
     std::cout << "grafo: " << arquivo << " (" << repr_texto << ")\n"
               << "  n = " << g.n() << ", m = " << g.m() << "\n"
               << "  linhas de aresta = " << info.linhas_aresta << ", lacos ignorados = " << info.lacos_ignorados
@@ -168,7 +182,7 @@ int executar(const Opcoes& o) {
     if (o.comando == "estatisticas") {
         exigir_posicionais(o, 1, "estatisticas <arquivo> [--repr lista|matriz] -o <saida>");
         if (!o.saida) throw ErroUso("estatisticas exige -o <saida>");
-        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr);
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
         Cronometro c;
         const grafos::Estatisticas e = grafos::estatisticas(g);
         const grafos::Componentes comp = grafos::componentes_conexas(g);
@@ -182,7 +196,7 @@ int executar(const Opcoes& o) {
         if (!o.origem) throw ErroUso(o.comando + " exige --origem <v>");
         if (!o.saida) throw ErroUso(o.comando + " exige -o <saida>");
         const int32_t origem = ler_vertice(*o.origem, "vertice de origem");
-        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr);
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
         Cronometro c;
         const grafos::ArvoreBusca a = o.comando == "bfs" ? grafos::bfs(g, origem) : grafos::dfs(g, origem);
         imprimir_tempo(c.segundos());
@@ -194,7 +208,7 @@ int executar(const Opcoes& o) {
         exigir_posicionais(o, 3, "distancia <arquivo> <u> <v> [--repr lista|matriz] [--caminho]");
         const int32_t u = ler_vertice(o.posicionais[1], "vertice u");
         const int32_t v = ler_vertice(o.posicionais[2], "vertice v");
-        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr);
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
         Cronometro c;
         if (o.caminho) {
             const std::vector<int32_t> caminho = grafos::caminho_minimo(g, u, v);
@@ -225,7 +239,7 @@ int executar(const Opcoes& o) {
         const std::string algoritmo = o.algoritmos.empty() ? "--exato" : o.algoritmos[0];
         if (o.limite && algoritmo != "--exato") throw ErroUso("--limite so vale com --exato");
         const double limite = o.limite ? ler_segundos(*o.limite) : 1800.0;
-        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr);
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
         grafos::Diametro d;
         if (algoritmo == "--ingenuo") {
             d = grafos::diametro_ingenuo(g);
@@ -267,7 +281,7 @@ int executar(const Opcoes& o) {
                 ini = fim + 1;
             }
         }
-        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr);
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
         Cronometro c;
         const grafos::ResultadoDijkstra r = grafos::dijkstra(g, origem, fila);
         imprimir_tempo(c.segundos());
@@ -287,6 +301,59 @@ int executar(const Opcoes& o) {
         if (o.saida) {
             grafos::escrever_dijkstra(r, *o.saida);
             std::cout << "saida: " << *o.saida << "\n";
+        }
+        return 0;
+    }
+    if (o.comando == "bellman-ford") {
+        exigir_posicionais(o, 1, "bellman-ford <arquivo> --destino <v> [--direcionado]");
+        if (!o.destino) throw ErroUso("bellman-ford exige --destino <v>");
+        const int32_t destino = ler_vertice(*o.destino, "destino");
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
+        Cronometro c;
+        const auto r = grafos::bellman_ford(g, destino);
+        imprimir_tempo(c.segundos());
+        std::cout << "ciclo negativo: " << (r.ciclo_negativo ? "sim" : "nao")
+                  << ", afeta destino: " << (r.ciclo_afeta_destino ? "sim" : "nao") << "\n";
+        if (o.origem) {
+            const int32_t origem = ler_vertice(*o.origem, "origem");
+            g.validar_vertice(origem);
+            const double d = r.dist[static_cast<size_t>(origem - 1)];
+            std::cout << "distancia " << origem << " -> " << destino << ": " << d << "\n";
+            for (int32_t v : grafos::caminho(r, origem)) std::cout << v << ' ';
+            std::cout << "\n";
+        }
+        if (o.saida) {
+            std::FILE* f = std::fopen(o.saida->c_str(), "w");
+            if (!f) throw grafos::ErroGrafo("nao foi possivel criar saida");
+            for (int32_t v = 1; v <= g.n(); ++v)
+                std::fprintf(f, "%d %d %.17g\n", v, r.sucessor[static_cast<size_t>(v-1)], r.dist[static_cast<size_t>(v-1)]);
+            std::fclose(f);
+        }
+        return 0;
+    }
+    if (o.comando == "floyd-warshall") {
+        exigir_posicionais(o, 1, "floyd-warshall <arquivo> [--direcionado]");
+        const auto cab = grafos::ler_cabecalho(o.posicionais[0]);
+        const uint64_t bytes = grafos::estimar_bytes_floyd_warshall(cab.n);
+        const long double trabalho = static_cast<long double>(cab.n) * cab.n * cab.n;
+        if (!o.forcar && trabalho > 1e10L)
+            throw grafos::ErroGrafo("Floyd-Warshall ultrapassa 10 bilhoes de iteracoes; use --forcar em ambiente adequado");
+        const int64_t disponivel = grafos::meminfo_bytes("MemAvailable");
+        if (disponivel >= 0 && bytes > static_cast<uint64_t>(0.8 * static_cast<double>(disponivel)))
+            throw grafos::ErroGrafo("Floyd-Warshall requer " + formatar_gb(static_cast<double>(bytes)) +
+                                    " para distancias e caminhos; memoria disponivel " +
+                                    formatar_gb(static_cast<double>(disponivel)));
+        grafos::Grafo g = carregar_com_resumo(o.posicionais[0], o.repr, o.direcionado);
+        Cronometro c;
+        const auto r = grafos::floyd_warshall(g);
+        imprimir_tempo(c.segundos());
+        std::cout << "ciclo negativo: " << (r.ciclo_negativo ? "sim" : "nao") << "\n";
+        if (o.origem && o.destino) {
+            const int32_t origem = ler_vertice(*o.origem, "origem");
+            const int32_t destino = ler_vertice(*o.destino, "destino");
+            std::cout << "distancia " << origem << " -> " << destino << ": " << r.distancia(origem, destino) << "\n";
+            for (int32_t v : r.caminho(origem, destino)) std::cout << v << ' ';
+            std::cout << "\n";
         }
         return 0;
     }

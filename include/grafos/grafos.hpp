@@ -4,6 +4,8 @@
 #include "grafos/componentes.hpp"
 #include "grafos/diametro.hpp"
 #include "grafos/dijkstra.hpp"
+#include "grafos/bellman_ford.hpp"
+#include "grafos/floyd_warshall.hpp"
 #include "grafos/distancia.hpp"
 #include "grafos/erro.hpp"
 #include "grafos/escrita.hpp"

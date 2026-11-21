@@ -15,7 +15,7 @@ namespace {
 
 constexpr FilaDijkstra FILAS[] = {FilaDijkstra::Vetor, FilaDijkstra::Heap};
 
-const char* const MSG_NEGATIVO = "a biblioteca ainda nao implementa caminhos minimos com pesos negativos";
+const char* const MSG_NEGATIVO = "Dijkstra nao aceita pesos negativos; use Bellman-Ford";
 
 // Aula 8, vertices a..g = 1..7.
 const std::string AULA8 = "7\n1 2 1\n1 4 4\n1 5 2\n2 3 4\n2 4 2\n3 4 1\n3 7 2\n4 5 2\n4 6 2\n5 6 3\n6 7 3\n";

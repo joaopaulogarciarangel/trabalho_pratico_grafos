@@ -19,10 +19,14 @@ namespace {
 void marcar_ciclos_negativos(ResultadoFloydWarshall& r) {
     const size_t n = static_cast<size_t>(r.n);
     const double INF = std::numeric_limits<double>::infinity();
-    size_t indefinidos = 0;
+    // Para assim que toda a matriz estiver indefinida (caso comum: ciclo negativo numa
+    // componente fortemente conexa). Celulas que ja estouraram para -inf no laco principal
+    // contam desde o inicio; sem isso a contagem nunca fecha e este laco custa n^3.
+    for (size_t k = 0; k < n; ++k) r.ciclo_negativo = r.ciclo_negativo || r.dist[k * n + k] < 0;
+    if (!r.ciclo_negativo) return;
+    size_t indefinidos = static_cast<size_t>(std::count(r.dist.begin(), r.dist.end(), -INF));
     for (size_t k = 0; k < n && indefinidos < n * n; ++k) {
         if (!(r.dist[k * n + k] < 0)) continue;
-        r.ciclo_negativo = true;
         for (size_t i = 0; i < n; ++i) {
             if (r.dist[i * n + k] == INF) continue;
             for (size_t j = 0; j < n; ++j) {

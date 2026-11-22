@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <random>
@@ -200,4 +201,25 @@ TEST_CASE("P3: Floyd-Warshall em blocos (n > bloco) igual ao classico e ao Bellm
             }
         }
     }
+}
+
+TEST_CASE("P3: Floyd-Warshall com ciclo negativo que estoura para -inf") {
+    // Anel 1 -> 2 -> ... -> n -> 1 com peso -1 e atalhos negativos: fortemente conexo, as
+    // estimativas caem exponencialmente e chegam a -inf durante o proprio laco. Regressao:
+    // o ciclo tem de ser detectado e a marcacao final nao pode custar n^3.
+    const int n = 1200;
+    std::ostringstream texto;
+    texto << n << '\n';
+    for (int i = 1; i <= n; ++i) texto << i << ' ' << (i % n) + 1 << " -1\n";
+    std::mt19937 rng(7);
+    for (int e = 0; e < 4 * n; ++e)
+        texto << 1 + rng() % n << ' ' << 1 + rng() % n << " -" << 1 + rng() % 3 << '\n';
+    auto g = dirigido(texto.str(), grafos::Representacao::Lista);
+    const auto fd = grafos::floyd_warshall_distancias(g);
+    CHECK(fd.ciclo_negativo);
+    const double MENOS_INF = -std::numeric_limits<double>::infinity();
+    CHECK(std::all_of(fd.dist.begin(), fd.dist.end(), [&](double d) { return d == MENOS_INF; }));
+    const grafos::BellmanFord bf(g);
+    CHECK(bf.ciclo_negativo());
+    CHECK(bf.executar(10).dist[0] == MENOS_INF);
 }

@@ -2,7 +2,7 @@
 
 **Dupla:** Gabriel dos Santos Percu Saldanha e João Paulo Garcia de Assis Rangel
 **Arquivo:** `Teoria-dos-Grafos-Parte-3-corrigida.pdf` (ou `.pptx`) — 10 slides: 8 da apresentação + apêndices A1 e A2, só para perguntas
-**Tempo planejado:** 7 min 25 s de fala, com 35 s de folga para a troca de apresentador e imprevistos.
+**Tempo planejado:** 7 min 15 s de fala, com 45 s de folga para a troca de apresentador e imprevistos.
 
 ---
 
@@ -26,12 +26,14 @@
 
 | Integrante | Bloco | Slides | Tempo | Relógio ao terminar |
 |---|---|---|---|---|
-| **Gabriel** | Abertura, direção, buscas e Bellman–Ford | 1 a 4 | 3 min 15 s | 3:15 |
-| **João Paulo** | Floyd–Warshall, resultados, comparação e conclusão | 5 a 8 | 4 min 10 s | 7:25 |
+| **Gabriel** | Abertura, direção, buscas, Bellman–Ford e Floyd–Warshall | 1 a 5 | 3 min 35 s | 3:35 |
+| **João Paulo** | Resultados, comparação e conclusão | 6 a 8 | 3 min 40 s | 7:15 |
 
-O bloco do João Paulo é maior porque concentra os resultados medidos, que são a parte que o professor mais vai cobrar. O Gabriel abre e explica as decisões de implementação.
+**Os slides 1 a 3 passam rápido** (1 min 25 s no total): direção, buscas e Dijkstra são o que todas as duplas vão apresentar, então basta dizer o essencial e seguir. O tempo economizado vai para o Bellman–Ford (slide 4) e para a comparação de todos os pares (slide 7), que são o diferencial do trabalho.
 
-**Troca de apresentador:** no fim do slide 4, o Gabriel diz a frase de passagem e dá um passo para o lado; o João Paulo já está perto da tela e começa sem pausa.
+O Gabriel explica **como** os algoritmos funcionam (slides 1 a 5); o João Paulo mostra **o que foi medido** e responde à pergunta do estudo 4 (slides 6 a 8).
+
+**Troca de apresentador:** no fim do slide 5, o Gabriel diz a frase de passagem e dá um passo para o lado; o João Paulo já está perto da tela e começa sem pausa.
 
 **Apêndices A1 e A2:** não são apresentados. Ficam prontos para perguntas sobre as matrizes 5×5.
 
@@ -41,27 +43,27 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 
 | Slide | Título | Quem | Tempo | Relógio |
 |---:|---|:---:|---:|---:|
-| 1 | Grafos dirigidos e caminhos mínimos (capa) | Gabriel | 0:25 | 0:25 |
-| 2 | Uma linha do arquivo, um arco: u → v | Gabriel | 0:40 | 1:05 |
-| 3 | Buscas e Dijkstra seguem os arcos | Gabriel | 0:45 | 1:50 |
-| 4 | Bellman–Ford: todos até um destino t | Gabriel | 1:25 | **3:15** |
-| 5 | Floyd–Warshall: uma única matriz | João Paulo | 1:00 | 4:15 |
-| 6 | Distâncias até o vértice 100 | João Paulo | 1:00 | 5:15 |
-| 7 | Todos os pares e os limites de memória | João Paulo | 1:30 | 6:45 |
-| 8 | O que entregamos e o que medimos | João Paulo | 0:40 | **7:25** |
+| 1 | Grafos dirigidos e caminhos mínimos (capa) | Gabriel | 0:20 | 0:20 |
+| 2 | Uma linha do arquivo, um arco: u → v | Gabriel | 0:30 | 0:50 |
+| 3 | Buscas e Dijkstra seguem os arcos | Gabriel | 0:35 | 1:25 |
+| 4 | Bellman–Ford: todos até um destino t | Gabriel | 1:15 | 2:40 |
+| 5 | Floyd–Warshall: uma única matriz | Gabriel | 0:55 | **3:35** |
+| 6 | Distâncias até o vértice 100 | João Paulo | 1:05 | 4:40 |
+| 7 | Todos os pares e os limites de memória | João Paulo | 1:50 | 6:30 |
+| 8 | O que entregamos e o que medimos | João Paulo | 0:45 | **7:15** |
 | A1, A2 | Matrizes de pares | — | só em perguntas | — |
 
 ---
 
 ## 3. Falas slide a slide
 
-### Gabriel — Abertura, direção, buscas e Bellman–Ford (0:00 → 3:15)
+### Gabriel — Abertura, direção, buscas, Bellman–Ford e Floyd–Warshall (0:00 → 3:35)
 
 ---
 
-#### Slide 1 — Capa · 0:25 · relógio 0:25
+#### Slide 1 — Capa · 0:20 · relógio 0:20
 
-**Objetivo:** apresentar a dupla e dar, logo de cara, a resposta curta do trabalho.
+**Objetivo:** apresentar a dupla e dar, logo de cara, a resposta curta do trabalho. Sem enrolar.
 
 > *[Comece de frente para a turma, sem olhar a tela. Espere o silêncio antes de falar.]*
 >
@@ -75,43 +77,31 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 
 ---
 
-#### Slide 2 — Uma linha do arquivo, um arco: u → v · 0:40 · relógio 1:05
+#### Slide 2 — Uma linha do arquivo, um arco: u → v · 0:30 · relógio 0:50
 
-**Objetivo:** mostrar que a direção é uma mudança **pequena e localizada** na leitura do grafo.
+**Objetivo:** passar rápido. Todas as duplas vão mostrar isso; basta dizer o essencial.
 
-> *[Avance. Aponte a linha do tempo da esquerda: primeiro “PARTES 1 E 2”, depois “PARTE 3”.]*
-> “A Parte 3 é uma continuação: a base das Partes 1 e 2 — lista e matriz de adjacências, BFS, DFS e Dijkstra — continua igual, e a Parte 3 acrescenta o **modo dirigido**, o Bellman–Ford e o Floyd–Warshall.
->
-> *[Vá para o cartão da direita. Aponte “u v peso” no topo.]*
-> Cada linha do arquivo traz dois vértices e um peso.
->
-> *[Aponte o desenho “Não dirigido”: a linha sem seta entre u e v.]*
-> No modo não dirigido, a aresta **vale nos dois sentidos**.
->
-> *[Aponte o desenho “Dirigido”: a seta azul de u para v. Diminua o ritmo.]*
-> No modo dirigido, ela vira **só o arco de u para v**.
+> *[Avance. Aponte o cartão da direita: primeiro o desenho “Não dirigido”, depois a seta azul de “Dirigido”.]*
+> “A direção entrou como um parâmetro da leitura: cada linha do arquivo, que antes valia **nos dois sentidos**, agora vira **só o arco de u para v**.
 >
 > *[Aponte as duas linhas de baixo do cartão.]*
-> Na prática, a mudança está só na leitura: na lista de adjacências, **v entra apenas na lista de u**; na matriz, **só a posição u, v** recebe o peso. Arco repetido fica com o menor peso, e laço é mantido, porque um laço negativo já é um ciclo negativo.”
+> Na lista de adjacências, **v entra só na lista de u**; na matriz, só a posição u, v recebe o peso. O resto das Partes 1 e 2 continua igual.”
 
 ---
 
-#### Slide 3 — Buscas e Dijkstra seguem os arcos · 0:45 · relógio 1:50
+#### Slide 3 — Buscas e Dijkstra seguem os arcos · 0:35 · relógio 1:25
 
-**Objetivo:** mostrar o efeito da direção nos algoritmos anteriores e a confiabilidade dos testes.
+**Objetivo:** passar rápido, deixando só o exemplo e o número de testes.
 
-> *[Avance. Aponte o desenho da esquerda e diga o que é antes de explicar.]*
-> “Neste exemplo, *[passe o dedo de s até a e de s até b]* a partir de **s** chegamos a **a** e a **b**. *[Aponte o arco tracejado entre c e s]* Mas **não** chegamos a **c**, porque o arco aponta **de c para s**, no sentido contrário.
+> *[Avance. Aponte o desenho: de s até a e b, depois o arco tracejado de c para s.]*
+> “Com isso, a busca em largura, a busca em profundidade e o Dijkstra **seguem só os arcos de saída**: a partir de s chegamos a a e b, mas **não a c**, porque o arco aponta de c para s. O Dijkstra continua **recusando pesos negativos**: para eles existe o Bellman–Ford.
 >
-> *[Vá para a lista da direita, item por item.]*
-> Por isso a busca em largura e a busca em profundidade *[primeiro item]* passaram a visitar **só os vizinhos de saída**. *[Segundo item]* O Dijkstra, nas duas versões, com vetor e com heap, segue a direção e **continua recusando pesos negativos** — para eles, existe o Bellman–Ford. *[Terceiro item]* E os caminhos são reconstruídos e conferidos somando os pesos.
->
-> *[Desça a mão até a faixa “SUÍTE RELEASE” e aponte os três números, um por vez.]*
-> Para garantir que tudo isso está certo, a suíte de testes tem **72 casos** e **40.969 verificações**, incluindo **100 grafos dirigidos aleatórios** comparados com uma implementação independente.”
+> *[Aponte os números da faixa “SUÍTE RELEASE”.]*
+> Tudo isso é conferido por **72 casos de teste** e **40.969 verificações**.”
 
 ---
 
-#### Slide 4 — Bellman–Ford: todos até um destino t · 1:25 · relógio 3:15
+#### Slide 4 — Bellman–Ford: todos até um destino t · 1:15 · relógio 2:40
 
 **Objetivo:** explicar o algoritmo, as **duas otimizações da aula 14** e a ideia de ciclo negativo. É o slide mais conceitual do Gabriel: fale mais devagar.
 
@@ -136,15 +126,11 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 > *[Volte a olhar para a turma.]*
 > Um detalhe de implementação: os arcos de entrada e a detecção do ciclo **não dependem do destino**. Então preparamos isso **uma vez** e cada consulta mede só o algoritmo.”
 >
-> *Passagem para o João Paulo:* “Isso é o Bellman–Ford, que resolve um destino por vez. Para todos os pares de uma vez, o João mostra o Floyd–Warshall.” *[Dê um passo para o lado.]*
+> *Transição:* “O Bellman–Ford resolve um destino por vez. Para todos os pares de uma vez, existe o Floyd–Warshall.”
 
 ---
 
-### João Paulo — Floyd–Warshall, resultados, comparação e conclusão (3:15 → 7:25)
-
----
-
-#### Slide 5 — Floyd–Warshall: uma única matriz · 1:00 · relógio 4:15
+#### Slide 5 — Floyd–Warshall: uma única matriz · 0:55 · relógio 3:35
 
 **Objetivo:** explicar a recorrência, a otimização de memória da aula 13 e o custo.
 
@@ -162,10 +148,16 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 >
 > *[Olhe para a turma: este é o detalhe técnico que viabilizou a medição.]*
 > Nos grafos de 25 mil vértices, as duas matrizes dariam 7,5 gigabytes e não cabiam. Como o estudo só pede distâncias, **guardamos só a matriz de distâncias**, 5 gigabytes, e a percorremos **em blocos, em paralelo**. É a mesma recorrência, só que aproveitando a memória cache, e os testes confirmam que o resultado é idêntico.”
+>
+> *Passagem para o João Paulo:* “Esses são os dois algoritmos. Agora o João mostra o que eles deram nos grafos do professor.” *[Dê um passo para o lado.]*
 
 ---
 
-#### Slide 6 — Distâncias até o vértice 100 · 1:00 · relógio 5:15
+### João Paulo — Resultados, comparação e conclusão (3:35 → 7:15)
+
+---
+
+#### Slide 6 — Distâncias até o vértice 100 · 1:05 · relógio 4:40
 
 **Objetivo:** responder ao **estudo 1** e explicar o caso do W1.
 
@@ -189,7 +181,7 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 
 ---
 
-#### Slide 7 — Todos os pares e os limites de memória · 1:30 · relógio 6:45
+#### Slide 7 — Todos os pares e os limites de memória · 1:50 · relógio 6:30
 
 **Objetivo:** responder aos **estudos 2, 3 e 4**: as distâncias entre os pares, o tempo de cada algoritmo e **qual é mais eficiente, e por quê**. É o slide mais importante da apresentação.
 
@@ -211,12 +203,15 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 > *[Olhe para a turma. Ritmo mais lento: este é o “por quê” do estudo 4.]*
 > **Por que o Bellman–Ford ganha?** O Floyd faz **n ao cubo** passos **sempre**: 15 trilhões e meio no W2, sem aproveitar que o grafo é esparso. Já o Bellman–Ford, com as melhorias da aula, **para em poucas rodadas e só toca os arcos dos vértices que mudaram**: para todos os pares, isso dá umas **30 vezes menos trabalho**.
 >
+> *[Aponte de novo a coluna “Matriz FW”.]*
+> E tem a memória: o Floyd precisa de **n ao quadrado**, a matriz inteira, enquanto o Bellman–Ford só guarda **um vetor de distâncias e o grafo**. É por isso que, do W3 em diante, só o Bellman–Ford roda.
+>
 > *[Aponte a caixa tracejada “ENSAIO SEPARADO”.]*
 > O Floyd só volta a competir em grafo **pequeno e mais denso**: neste ensaio com 100 vértices, os dois ficaram na mesma ordem de grandeza.”
 
 ---
 
-#### Slide 8 — O que entregamos e o que medimos · 0:40 · relógio 7:25
+#### Slide 8 — O que entregamos e o que medimos · 0:45 · relógio 7:15
 
 **Objetivo:** fechar com a mensagem central.
 
@@ -235,17 +230,18 @@ O bloco do João Paulo é maior porque concentra os resultados medidos, que são
 
 | Marco | Deveria estar em | Se estiver atrasado |
 |---|---|---|
-| Fim do Gabriel | **3:15**, no fim do slide 4 | No slide 4, cortar o parágrafo final sobre a preparação feita uma vez; ele volta no slide 6. |
-| Entrada no slide 7 | **5:15** | No slide 6, não ler as distâncias do W2: dizer só “finitas e conferidas” e ir direto ao W1. |
-| Entrada no slide 8 | **6:45** | No slide 7, pular o ensaio separado e ir direto à conclusão. |
+| Entrada no slide 4 | **1:25** | Os slides 1 a 3 são os que mais escorregam. Se passar disso, no slide 4 cortar o parágrafo final sobre a preparação feita uma vez; ele volta no slide 6. |
+| Fim do Gabriel | **3:35**, no fim do slide 5 | No slide 5, cortar o último parágrafo, sobre os blocos. |
+| Entrada no slide 7 | **4:40** | No slide 6, não ler as distâncias do W2: dizer só “finitas e conferidas” e ir direto ao W1. |
+| Entrada no slide 8 | **6:30** | No slide 7, pular o ensaio separado e o parágrafo da memória, e ir direto à conclusão. |
 
 Combinem que **quem não está falando segura o relógio** e mostra a mão aberta quando faltar 1 minuto para o fim do bloco.
 
 **Cortes de emergência, nesta ordem (economizam cerca de 1 minuto):**
-1. Slide 3: dizer só “as buscas e o Dijkstra seguem os arcos de saída; a suíte tem 72 casos e 40.969 verificações”.
+1. Slides 2 e 3: juntar numa frase só — “cada linha vira um arco de u para v, e as buscas e o Dijkstra seguem os arcos de saída; a suíte tem 72 casos de teste”.
 2. Slide 5: cortar o último parágrafo, sobre os blocos; se perguntarem, responde-se na hora.
 3. Slide 7: cortar o ensaio separado.
-4. Slide 2: dizer só “cada linha vira um arco de u para v, e a mudança fica só na leitura”.
+4. Slide 4: cortar o parágrafo sobre a preparação feita uma vez.
 
 **Nunca cortar:** o “por quê” do slide 7 e a explicação do ciclo do W1 no slide 6. São as respostas que o professor vai procurar.
 
@@ -258,7 +254,7 @@ Respostas curtas. Sempre que der, **apontem o slide** onde aquilo apareceu.
 | Pergunta | Resposta | Slide de apoio | Quem responde |
 |---|---|:---:|:---:|
 | **Por que o Floyd usa 12 núcleos e o Bellman–Ford não? Não é injusto?** | O paralelismo foi necessário para o Floyd caber no tempo: o laço simples levaria horas por execução. Mesmo com essa vantagem ele perdeu; com um núcleo só, a diferença seria ainda maior. | 7 | João Paulo |
-| **O Floyd em blocos ainda é o Floyd–Warshall?** | É: mesma recorrência, mesma matriz única. Muda só a ordem em que a matriz é visitada, para aproveitar a memória cache. Os testes comparam com o laço simples, inclusive com ciclo negativo. | 5 | João Paulo |
+| **O Floyd em blocos ainda é o Floyd–Warshall?** | É: mesma recorrência, mesma matriz única. Muda só a ordem em que a matriz é visitada, para aproveitar a memória cache. Os testes comparam com o laço simples, inclusive com ciclo negativo. | 5 | Gabriel |
 | **Por que só 3 execuções do Floyd no W1?** | Cada execução leva cerca de 14,5 minutos; as três ficaram entre 13,7 e 16,1. O relatório diz isso. Todas as outras medidas têm 10 execuções. | 7 | João Paulo |
 | **Como vocês sabem que o menos infinito do W1 está certo?** | O ciclo 15108 → 3965 → 15108 pesa −2,43, e verificamos fora da biblioteca que o W1 é fortemente conexo. Bellman–Ford e Floyd–Warshall chegaram à mesma conclusão. | 6 | João Paulo |
 | **Quais são as duas otimizações do Bellman–Ford?** | Memória: um vetor M[v] em vez da matriz M[i, v]. Tempo: só relaxar a partir dos vértices que mudaram na rodada anterior e parar quando nada muda. Ambas da aula 14. | 4 | Gabriel |
@@ -275,7 +271,8 @@ Respostas curtas. Sempre que der, **apontem o slide** onde aquilo apareceu.
 - [ ] Ler este roteiro em voz alta uma vez, cada um no seu bloco, **com cronômetro**.
 - [ ] Ensaiar os gestos de apontar no projetor ou numa TV: o dedo segue o arco no desenho e a linha inteira na tabela, devagar.
 - [ ] Conferir se BFS, DFS, Bellman–Ford e Floyd–Warshall são ditos por extenso na primeira vez.
-- [ ] Treinar a passagem do Gabriel para o João Paulo (fim do slide 4).
+- [ ] Treinar a passagem do Gabriel para o João Paulo (fim do slide 5).
+- [ ] Cronometrar os slides 1 a 3 juntos: precisam caber em 1 min 25 s.
 - [ ] Ensaiar as respostas das perguntas prováveis, principalmente as três primeiras.
 - [ ] Saber ir direto aos apêndices A1 e A2.
 - [ ] Ter o arquivo em pendrive e no OneDrive.

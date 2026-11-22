@@ -179,6 +179,11 @@ dois blocos. `+inf` indica ausência de caminho e `-inf` indica distância
 indefinida por ciclo negativo alcançável. A rotina `arvore_origem` reconstrói
 os pais a partir da matriz de próximos vértices.
 
+As duas melhorias de Bellman-Ford da Aula 14 estão implementadas: um vetor
+`M[v]` de distâncias em vez da matriz por iteração `M[i,v]`; e a atualização
+a partir dos vértices alterados na rodada anterior, com parada quando não há
+mudanças.
+
 Exemplos após `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release` e
 `cmake --build build -j`:
 

@@ -122,8 +122,8 @@ ResultadoBellmanFord bellman_ford(const Grafo& g, int32_t destino) {
         std::fill(r.sucessor.begin(), r.sucessor.end(), -1);
         return r;
     }
-    // Otimizacoes: varrer somente os vertices modificados na rodada anterior
-    // e encerrar quando nenhuma estimativa melhorar.
+    // Aula 14: memoria com vetor M[v] (r.dist) em vez de M[i,v]; tempo com
+    // vertices alterados na rodada anterior e parada sem novas melhorias.
     std::vector<int32_t> ativos{destino - 1};
     std::vector<uint8_t> marcado(static_cast<size_t>(n), 0);
     for (int32_t rodada = 0; rodada < n - 1 && !ativos.empty(); ++rodada) {

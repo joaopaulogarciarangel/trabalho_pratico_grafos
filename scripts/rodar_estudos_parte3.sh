@@ -5,7 +5,7 @@
 # Floyd-Warshall, padrao 10), BF_TODOS_REP (rodadas completas de Bellman-Ford para todos os
 # pares, padrao 10), AMOSTRA (destinos da estimativa do BF todos os pares, padrao 100).
 # CSVs ja existentes sao pulados (permite retomar). Ordem: rapidos primeiro; W_2 e W_1 por
-# ultimo, pois o Floyd-Warshall (25000^2 x 8 B = 5 GB) leva cerca de 20 min por rodada.
+# ultimo, pois o Floyd-Warshall (25000^2 x 8 B = 5 GB) leva 12-15 min por rodada.
 
 set -u
 set -o pipefail

@@ -1,0 +1,52 @@
+arquivo,grafo_W_3.txt
+n,100000
+m,6099941
+peso_negativo,nao
+carga_s,1.0341831
+cpu,AMD Ryzen 5 5500
+compilador,g++ 15.2.0
+data,2026-11-22 11:41:01
+bellman_preparacao_s,0.480034
+ciclo_negativo,nao
+repeticoes,10
+bellman_destino100_media_s,0.16233913
+bellman_destino100_rodadas,25
+ciclo_afeta_100,nao
+dist_10_100,4.63
+caminho_10_100,10 2858 9370 31488 43785 48833 70398 74552 100
+dist_20_100,5.42
+caminho_20_100,20 2526 8495 13021 15939 20244 36899 74552 100
+dist_30_100,4.67
+caminho_30_100,30 29698 43059 43482 35741 74494 74552 100
+bf_10_10,0
+bf_20_10,3.48
+bf_30_10,3.96
+bf_40_10,3.579999999999999
+bf_50_10,3.25
+bf_10_20,4.989999999999999
+bf_20_20,0
+bf_30_20,5.800000000000001
+bf_40_20,5.589999999999999
+bf_50_20,5.410000000000001
+bf_10_30,5.71
+bf_20_30,6.19
+bf_30_30,0
+bf_40_30,6.099999999999998
+bf_50_30,6.12
+bf_10_40,7.489999999999999
+bf_20_40,8.270000000000001
+bf_30_40,8.3
+bf_40_40,0
+bf_50_40,8.099999999999998
+bf_10_50,4.3100000000000005
+bf_20_50,4.32
+bf_30_50,3.17
+bf_40_50,3.84
+bf_50_50,0
+memoria_disponivel_bytes,7213199360
+floyd_bytes,80000000000
+floyd_status,nao_cabe_na_memoria
+bf_todos_status,estimado_por_amostra
+bf_todos_amostra,100
+bf_todos_media_por_destino_s,0.16483486624
+bf_todos_estimado_s,16483.486624

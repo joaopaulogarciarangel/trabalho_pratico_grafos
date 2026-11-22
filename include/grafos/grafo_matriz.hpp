@@ -25,6 +25,7 @@ public:
     int32_t grau(int32_t v) const { return grau_[static_cast<size_t>(v)]; }
     bool ponderado() const { return ponderado_; }
     bool tem_peso_negativo() const { return tem_peso_negativo_; }
+    bool direcionado() const { return direcionado_; }
 
     bool sao_vizinhos(int32_t u, int32_t v) const {
         uint64_t palavra = bits_[static_cast<size_t>(u) * palavras_ + static_cast<size_t>(v >> 6)];
@@ -83,6 +84,7 @@ private:
     int64_t m_ = 0;
     bool ponderado_ = false;
     bool tem_peso_negativo_ = false;
+    bool direcionado_ = false;
     size_t palavras_ = 0;  // W
     std::vector<uint64_t> bits_;
     std::vector<double> pesos_;

@@ -15,7 +15,7 @@ const char* nome(FilaDijkstra fila) {
 ResultadoDijkstra dijkstra(const Grafo& g, int32_t origem, FilaDijkstra fila) {
     g.validar_vertice(origem);
     if (g.tem_peso_negativo()) {
-        throw ErroGrafo("a biblioteca ainda nao implementa caminhos minimos com pesos negativos");
+        throw ErroGrafo("Dijkstra nao aceita pesos negativos; use Bellman-Ford");
     }
     return g.visitar([&](const auto& concreto) {
         return fila == FilaDijkstra::Vetor ? detalhe::dijkstra<detalhe::FronteiraVetor>(concreto, origem - 1)

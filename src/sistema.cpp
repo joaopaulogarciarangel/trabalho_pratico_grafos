@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <cstdlib>
 #include <fstream>
 #include <memory>
 #include <random>
@@ -14,6 +15,12 @@
 #include "grafos/grafo_lista.hpp"
 #include "grafos/grafo_matriz.hpp"
 #include "grafos/leitura.hpp"
+
+#ifdef _WIN32
+#define PSAPI_VERSION 2
+#include <windows.h>
+#include <psapi.h>
+#endif
 
 namespace grafos {
 namespace {
@@ -45,21 +52,41 @@ int64_t kb_para_bytes(const std::string& valor) {
 }  // namespace
 
 int64_t memoria_residente_bytes() {
+#ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS uso{};
+    if (!GetProcessMemoryInfo(GetCurrentProcess(), &uso, sizeof(uso))) return -1;
+    return static_cast<int64_t>(uso.WorkingSetSize);
+#else
     std::string valor;
     if (!valor_de_campo("/proc/self/status", "VmRSS", valor)) return -1;
     return kb_para_bytes(valor);
+#endif
 }
 
 int64_t meminfo_bytes(const std::string& campo) {
+#ifdef _WIN32
+    MEMORYSTATUSEX estado{};
+    estado.dwLength = sizeof(estado);
+    if (!GlobalMemoryStatusEx(&estado)) return -1;
+    if (campo == "MemAvailable") return static_cast<int64_t>(estado.ullAvailPhys);
+    if (campo == "MemTotal") return static_cast<int64_t>(estado.ullTotalPhys);
+    return -1;
+#else
     std::string valor;
     if (!valor_de_campo("/proc/meminfo", campo, valor)) return -1;
     return kb_para_bytes(valor);
+#endif
 }
 
 std::string modelo_cpu() {
+#ifdef _WIN32
+    const char* nome = std::getenv("PROCESSOR_IDENTIFIER");
+    return nome ? nome : "desconhecido";
+#else
     std::string valor;
     if (!valor_de_campo("/proc/cpuinfo", "model name", valor)) return "desconhecido";
     return valor;
+#endif
 }
 
 std::string versao_compilador() {
@@ -75,7 +102,11 @@ std::string versao_compilador() {
 std::string data_hora_atual() {
     std::time_t agora = std::time(nullptr);
     std::tm local{};
+#ifdef _WIN32
+    localtime_s(&local, &agora);
+#else
     localtime_r(&agora, &local);
+#endif
     char buffer[32];
     std::strftime(buffer, sizeof buffer, "%Y-%m-%d %H:%M:%S", &local);
     return buffer;

@@ -5,3 +5,6 @@ build-asan/
 !tests/dados/
 __pycache__/
 referencias/
+build_windows/
+build_ninja/
+build_cmake/

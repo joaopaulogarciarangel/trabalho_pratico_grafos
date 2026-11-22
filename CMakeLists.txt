@@ -37,6 +37,8 @@ add_library(grafos_lib STATIC
     src/diametro.cpp
     src/sistema.cpp
     src/dijkstra.cpp
+    src/bellman_ford.cpp
+    src/floyd_warshall.cpp
     src/nomes.cpp
 )
 set_target_properties(grafos_lib PROPERTIES OUTPUT_NAME grafos)
@@ -51,6 +53,16 @@ target_link_libraries(estudos PRIVATE grafos_lib)
 
 add_executable(estudos_dijkstra estudos/estudos_dijkstra.cpp)
 target_link_libraries(estudos_dijkstra PRIVATE grafos_lib)
+
+add_executable(estudos_parte3 estudos/estudos_parte3.cpp)
+target_link_libraries(estudos_parte3 PRIVATE grafos_lib)
+
+# Estudo suplementar com arcos compactos para os grandes grafos sem pesos negativos.
+add_executable(estudo_compacto estudos/estudo_compacto.cpp)
+target_link_libraries(estudo_compacto PRIVATE grafos_opcoes)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(estudo_compacto PRIVATE -O3)
+endif()
 
 add_executable(gerar_grafo app/gerar_grafo.cpp)
 target_link_libraries(gerar_grafo PRIVATE grafos_opcoes)
@@ -69,6 +81,7 @@ add_executable(testes
     tests/teste_fronteira.cpp
     tests/teste_dijkstra.cpp
     tests/teste_nomes.cpp
+    tests/teste_parte3.cpp
 )
 target_include_directories(testes SYSTEM PRIVATE third_party)
 target_include_directories(testes PRIVATE tests)

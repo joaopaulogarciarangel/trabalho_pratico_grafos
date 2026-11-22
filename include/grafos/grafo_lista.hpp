@@ -26,6 +26,7 @@ public:
     int32_t grau(int32_t v) const { return grau_[static_cast<size_t>(v)]; }
     bool ponderado() const { return ponderado_; }
     bool tem_peso_negativo() const { return tem_peso_negativo_; }
+    bool direcionado() const { return direcionado_; }
 
     bool sao_vizinhos(int32_t u, int32_t v) const {
         const std::vector<int32_t>& viz = adjacencia_[static_cast<size_t>(u)];
@@ -72,6 +73,7 @@ private:
     int64_t m_ = 0;
     bool ponderado_ = false;
     bool tem_peso_negativo_ = false;
+    bool direcionado_ = false;
     std::vector<std::vector<int32_t>> adjacencia_;
     std::vector<std::vector<double>> pesos_;
     std::vector<int32_t> grau_;

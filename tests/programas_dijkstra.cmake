@@ -31,7 +31,7 @@ exigir_texto("${SAIDA}" "destino 4: infinito\n")
 
 # Pesos negativos: recusa com a mensagem da especificacao
 rodar(1 "${GRAFOS}" dijkstra "${DADOS}/figura1_pesos.txt" --origem 1)
-exigir_texto("${ERRO}" "a biblioteca ainda nao implementa caminhos minimos com pesos negativos")
+exigir_texto("${ERRO}" "Dijkstra nao aceita pesos negativos; use Bellman-Ford")
 
 # Erros de uso e de entrada
 rodar(2 "${GRAFOS}" dijkstra "${TMP}/fig1_pos.txt")

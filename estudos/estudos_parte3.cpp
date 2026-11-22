@@ -155,26 +155,35 @@ int main(int argc, char** argv) {
         } else if (!fw_cabe) {
             linha("floyd_status", "nao_cabe_na_memoria");
         } else {
+            // Cada rodada aloca a matriz (8n^2 bytes) e a libera ao fim do escopo: guardar o
+            // resultado inteiro de uma rodada enquanto a seguinte aloca outra dobraria a memoria
+            // (10 GB no W_2). Da primeira rodada ficam so o ciclo e os 25 pares do estudo.
             double tempo = 0;
-            grafos::ResultadoFloydWarshall primeiro;
+            bool fw_ciclo = false;
+            double fw5[5][5] = {};
             for (int k = 0; k < o.fw_repeticoes; ++k) {
                 inicio = Relogio::now();
-                auto atual = grafos::floyd_warshall_distancias(g, o.threads);
+                const auto atual = grafos::floyd_warshall_distancias(g, o.threads);
                 const double s = segundos(inicio);
                 tempo += s;
                 linha("floyd_rodada_" + std::to_string(k + 1) + "_s", s);
-                if (k == 0) primeiro = std::move(atual);
+                if (k == 0) {
+                    fw_ciclo = atual.ciclo_negativo;
+                    if (n >= 50)
+                        for (int i = 0; i < 5; ++i)
+                            for (int j = 0; j < 5; ++j) fw5[i][j] = atual.distancia(conjunto[i], conjunto[j]);
+                }
             }
             linha("floyd_status", "executado");
             linha("floyd_repeticoes", static_cast<double>(o.fw_repeticoes));
             linha("floyd_media_s", tempo / o.fw_repeticoes);
-            linha("floyd_ciclo_negativo", primeiro.ciclo_negativo ? "sim" : "nao");
-            if (primeiro.ciclo_negativo != bf.ciclo_negativo()) throw std::runtime_error("Floyd e Bellman-Ford divergem no ciclo");
+            linha("floyd_ciclo_negativo", fw_ciclo ? "sim" : "nao");
+            if (fw_ciclo != bf.ciclo_negativo()) throw std::runtime_error("Floyd e Bellman-Ford divergem no ciclo");
             if (n >= 50) {
                 bool confere = true;
                 for (int i = 0; i < 5; ++i)
                     for (int j = 0; j < 5; ++j) {
-                        const double d = primeiro.distancia(conjunto[i], conjunto[j]);
+                        const double d = fw5[i][j];
                         linha("floyd_" + std::to_string(conjunto[i]) + "_" + std::to_string(conjunto[j]), numero(d));
                         confere = confere && iguais(d, bf5[i][j]);
                     }

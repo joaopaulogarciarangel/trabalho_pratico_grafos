@@ -57,6 +57,13 @@ target_link_libraries(estudos_dijkstra PRIVATE grafos_lib)
 add_executable(estudos_parte3 estudos/estudos_parte3.cpp)
 target_link_libraries(estudos_parte3 PRIVATE grafos_lib)
 
+# Estudo suplementar com arcos compactos para os grandes grafos sem pesos negativos.
+add_executable(estudo_compacto estudos/estudo_compacto.cpp)
+target_link_libraries(estudo_compacto PRIVATE grafos_opcoes)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(estudo_compacto PRIVATE -O3)
+endif()
+
 add_executable(gerar_grafo app/gerar_grafo.cpp)
 target_link_libraries(gerar_grafo PRIVATE grafos_opcoes)
 

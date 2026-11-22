@@ -215,6 +215,36 @@ negativo e laço. Os arquivos de caso não entram no repositório.
 `grafo_W_*.csv` precisam ser interpretados junto com `perfil.csv` e com as
 limitações descritas no relatório da Parte 3.
 
+### W4 e W5 com representação compacta
+
+O carregador geral da biblioteca não coube na RAM disponível para W4 e W5.
+Como esses dois arquivos não têm pesos negativos e seus pesos têm centésimos,
+o estudo suplementar usa arcos binários de 12 bytes e um vetor de distâncias
+em centésimos. `preparar_compacto.py` lê o `.gz` uma vez; `estudo_compacto`
+carrega apenas os arcos compactos, executa Bellman–Ford por destino 100 dez
+vezes e calcula os 25 pares de `{10,20,30,40,50}`. O relógio envolve somente
+as varreduras do algoritmo, sem preparação nem leitura do binário. A rodada
+final sem alterações comprova convergência, e os caminhos selecionados são
+reconstruídos e conferidos pelo peso. As saídas ficam em
+`resultados/parte3/grafo_W_4_compacto.csv` e `grafo_W_5_compacto.csv`.
+
+Exemplo no Windows após `scripts/build_windows.ps1 -Test`:
+
+```powershell
+python scripts/preparar_compacto.py C:\caminho\grafo_W_4.txt.gz build_windows\W4.bin
+build_windows\estudo_compacto.exe build_windows\W4.bin 1000000 10 > resultados\parte3\grafo_W_4_compacto.csv
+python scripts/preparar_compacto.py C:\caminho\grafo_W_5.txt.gz build_windows\W5.bin
+build_windows\estudo_compacto.exe build_windows\W5.bin 10000000 10 > resultados\parte3\grafo_W_5_compacto.csv
+```
+
+O programa compacto é uma variante de Bellman–Ford para estes casos sem
+pesos negativos, separada da representação geral da biblioteca. Os tempos
+W4/W5 são dez rodadas desse programa em memória e não medem exatamente a
+mesma implementação usada nos CSVs W1–W3. As matrizes 5×5 W4/W5 são saídas
+de Bellman–Ford, **não** de Floyd–Warshall. Floyd não foi executado nos cinco
+arquivos reais, e a comparação completa de todos os pares continua inviável
+neste equipamento. Os `.bin` temporários não fazem parte da entrega.
+
 Para validar o circuito de comparação em uma instância pequena e reproduzível:
 
 ```bash

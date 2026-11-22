@@ -215,7 +215,7 @@ cinco chamadas de Bellman-Ford), média do Floyd-Warshall e do Bellman-Ford para
 todos os pares. A carga do grafo e a preparação do Bellman-Ford (arcos de entrada e
 detecção global de ciclo negativo, feitas uma vez) ficam fora do cronômetro das
 consultas e são registradas à parte. O Floyd-Warshall só roda se `8n²` bytes couberem
-na memória (W_1 e W_2, 5 GB; 12 min por rodada no W_2 e 14,5 no W_1, medido com `FW_REP=3`); nos demais o CSV registra
+na memória (W_1 e W_2, 5 GB; 12 min por rodada no W_2 e 13,8 no W_1); nos demais o CSV registra
 `nao_cabe_na_memoria`. O Bellman-Ford para todos os pares é medido inteiro em W_1 e
 W_2 e estimado por amostra de 100 destinos em W_3–W_5. O script também roda uma
 instância sintética de 100 vértices (`validacao_100`), com todos os estudos completos.

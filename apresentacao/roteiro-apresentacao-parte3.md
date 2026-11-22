@@ -198,7 +198,7 @@ O Gabriel explica **como** os algoritmos funcionam (slides 1 a 5); o João Paulo
 > Agora o resultado. No W2, o Floyd–Warshall levou **718 segundos** por execução, uns 12 minutos; o Bellman–Ford para os 25 mil destinos levou **403 segundos**, menos de 7 minutos. *[Aponte o destaque “Bellman–Ford repetido venceu”]* O Bellman–Ford foi **1,8 vez mais rápido**, e isso **com o Floyd usando 12 núcleos de processamento e o Bellman–Ford, um só**.
 >
 > *[Aponte a linha W1.]*
-> No W1 a diferença é enorme: o Bellman–Ford respondeu todos os pares em **0,35 segundo**, porque detecta o ciclo uma vez; o Floyd levou **870 segundos**, quase 15 minutos, para chegar à mesma conclusão. *[Aponte “(3×)”]* No W1 o Floyd foi medido **três vezes**, porque cada execução leva quase 15 minutos; todo o resto é média de dez.
+> No W1 a diferença é enorme: o Bellman–Ford respondeu todos os pares em **0,35 segundo**, porque detecta o ciclo uma vez; o Floyd levou **829 segundos**, quase 14 minutos, para chegar à mesma conclusão.
 >
 > *[Olhe para a turma. Ritmo mais lento: este é o “por quê” do estudo 4.]*
 > **Por que o Bellman–Ford ganha?** O Floyd faz **n ao cubo** passos **sempre**: 15 trilhões e meio no W2, sem aproveitar que o grafo é esparso. Já o Bellman–Ford, com as melhorias da aula, **para em poucas rodadas e só toca os arcos dos vértices que mudaram**: para todos os pares, isso dá umas **30 vezes menos trabalho**.
@@ -255,7 +255,6 @@ Respostas curtas. Sempre que der, **apontem o slide** onde aquilo apareceu.
 |---|---|:---:|:---:|
 | **Por que o Floyd usa 12 núcleos e o Bellman–Ford não? Não é injusto?** | O paralelismo foi necessário para o Floyd caber no tempo: o laço simples levaria horas por execução. Mesmo com essa vantagem ele perdeu; com um núcleo só, a diferença seria ainda maior. | 7 | João Paulo |
 | **O Floyd em blocos ainda é o Floyd–Warshall?** | É: mesma recorrência, mesma matriz única. Muda só a ordem em que a matriz é visitada, para aproveitar a memória cache. Os testes comparam com o laço simples, inclusive com ciclo negativo. | 5 | Gabriel |
-| **Por que só 3 execuções do Floyd no W1?** | Cada execução leva cerca de 870 segundos (14,5 minutos); as três ficaram entre 819 e 966 segundos. O relatório diz isso. Todas as outras medidas têm 10 execuções. | 7 | João Paulo |
 | **Como vocês sabem que o menos infinito do W1 está certo?** | O ciclo 15108 → 3965 → 15108 pesa −2,43, e verificamos fora da biblioteca que o W1 é fortemente conexo. Bellman–Ford e Floyd–Warshall chegaram à mesma conclusão. | 6 | João Paulo |
 | **Quais são as duas otimizações do Bellman–Ford?** | Memória: um vetor M[v] em vez da matriz M[i, v]. Tempo: só relaxar a partir dos vértices que mudaram na rodada anterior e parar quando nada muda. Ambas da aula 14. | 4 | Gabriel |
 | **Qual a diferença entre ciclo global e ciclo que afeta t?** | O global existe em algum lugar do grafo; ele só afeta a consulta se a origem o alcança e, a partir dele, se chega a t. Detectamos o global com uma superorigem ligada a todos os vértices com custo zero. | 4 | Gabriel |

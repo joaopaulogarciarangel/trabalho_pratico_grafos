@@ -1,6 +1,6 @@
 # grafos
 
-Biblioteca de grafos em C++17 (COS 242 — Teoria dos Grafos, Trabalho Partes 1 e 2): leitura de grafos não direcionados, com ou sem pesos, representação por **lista** ou **matriz de adjacência**, BFS, DFS, distância, componentes conexas, estatísticas de grau, diâmetro (ingênuo, aproximado e exato) e **caminhos mínimos com Dijkstra** (com vetor ou com heap). Inclui o programa de linha de comando `grafos`, os programas `estudos` e `estudos_dijkstra` e scripts para os estudos de caso.
+Biblioteca de grafos em C++17 (COS 242 — Teoria dos Grafos, Partes 1 a 3): representações por **lista** ou **matriz de adjacência**, grafos não dirigidos e dirigidos, BFS, DFS, Dijkstra, Bellman–Ford e Floyd–Warshall. Inclui o programa de linha de comando `grafos`, estudos de caso, testes e materiais de apresentação.
 
 ## Requisitos (WSL2 / Ubuntu)
 
@@ -160,6 +160,8 @@ build/gerar_grafo --n 1000000 --m 5000000 --semente 1 -o /tmp/grafos-sintetico/g
 ## Organização
 
 ## Parte 3: grafos direcionados, Bellman-Ford e Floyd-Warshall
+
+O [relatório da Parte 3](relatorio-parte3-Grafos.pdf) tem cinco páginas. Os [slides, roteiro e guia de estudo](apresentacao/) estão na pasta `apresentacao/`; os resultados medidos estão em `resultados/parte3/`.
 
 A Parte 3 preserva o comportamento não direcionado por padrão. Passe `--direcionado`
 para interpretar cada linha `u v peso` como um único arco `u -> v`. A lista e a

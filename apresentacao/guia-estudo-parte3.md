@@ -9,7 +9,7 @@
 
 ## Algoritmos
 
-**Bellman–Ford por destino:** inicializar `d[t]=0` e, para cada arco `u→v`, fazer `d[u]←min(d[u],peso(u,v)+d[v])`. Sucessores reconstroem caminhos. Encerra quando uma rodada não muda nada; a biblioteca também usa fronteira de vértices alterados. Pior caso `O(nm)` por destino, memória `O(n+m)`.
+**Bellman–Ford por destino:** inicializar `d[t]=0` e, para cada arco `u→v`, fazer `d[u]←min(d[u],peso(u,v)+d[v])`. Sucessores reconstroem caminhos. As duas melhorias da Aula 14 são: guardar `M[v]` em um vetor em vez de `M[i,v]` em uma matriz por iteração; atualizar a partir dos vértices alterados na rodada anterior e parar quando não houver alterações. A biblioteca implementa ambas. Pior caso `O(nm)` por destino, memória `O(n+m)`.
 
 **Floyd–Warshall:** com `k` no laço externo, `D[i][j]←min(D[i][j],D[i][k]+D[k][j])`. Uma matriz de distâncias é atualizada no lugar e outra guarda próximos vértices. Tempo `O(n³)`; memória `O(n²)`, aproximadamente `12n²` bytes para as matrizes.
 
@@ -38,7 +38,7 @@ Em W1, o ciclo `15108→3965→15108` tem pesos `0,04` e `−2,47`, soma `−2,4
 | W4 | 12 TB |
 | W5 | 1,2 PB |
 
-Havia cerca de **1,06 GB livre** na medição. A representação original também excedia essa memória na carga de W4/W5 (picos estimados em 2,30 e 4,13 GB). A variante compacta permitiu Bellman–Ford nesses grafos, com dez medições e as tabelas 5×5. Ela **não** torna Floyd viável: ele ainda precisa de matrizes quadráticas e tempo cúbico. Bellman–Ford para **todos os pares** reais também não foi executado pelo número de destinos e volume de saída. Aqui a barreira é principalmente tempo e armazenamento da resposta, não memória para uma consulta.
+Havia cerca de **1,06 GB livre** na medição. A representação original também excedia essa memória na carga de W4/W5 (picos estimados em 2,30 e 4,13 GB). A variante compacta permitiu Bellman–Ford nesses grafos, com dez medições e as tabelas 5×5. Ela **não** torna Floyd viável: ele ainda precisa de matrizes quadráticas e tempo cúbico. Bellman–Ford para **todos os pares** reais também não foi executado, principalmente pelo tempo de processar tantos destinos. É possível cronometrá-lo sem guardar a matriz de resultados; armazenar a resposta completa exigiria espaço adicional enorme.
 
 Comparação de todos os pares apenas em grafo sintético de 100 vértices e 581 arcos, dez rodadas: Floyd `0,001082 s`; BF `0,005809 s`; razão `5,37×` **nessa instância**. Não há resultado comparativo medido em W1–W5.
 
@@ -54,9 +54,9 @@ Comparação de todos os pares apenas em grafo sintético de 100 vértices e 581
 
 **Como W4/W5 couberam?** Cada arco ocupou 12 bytes, com vetores de distâncias e sucessores. Os arcos foram carregados antes da medição; cada caminho selecionado teve seu peso conferido. Em W2, a variante reproduziu as 25 entradas da implementação original.
 
-**A memória foi o único impedimento?** Não. Floyd também exige tempo cúbico. BF para todos os pares exigiria processar até 10 milhões de destinos e poderia produzir até `10¹⁴` respostas em W5.
+**A memória foi o único impedimento?** Não. Floyd também exige tempo cúbico. BF para todos os pares exigiria processar até 10 milhões de destinos em W5; para medir só o tempo, não é necessário guardar as `10¹⁴` respostas possíveis.
 
-**As duas otimizações de BF são quais?** Parada antecipada e processamento da fronteira alterada. A segunda foi testada, mas não confirmamos que coincide exatamente com a segunda ensinada em aula.
+**As duas otimizações de BF são quais?** (1) Um vetor `M[v]` em vez de uma matriz `M[i,v]`; (2) atualizar a partir dos vértices alterados na rodada anterior e parar se não houver mudança. São as duas melhorias descritas nas páginas 11–12 da Aula 14 e implementadas na biblioteca.
 
 **O estudo 2 e o 4 foram cumpridos literalmente?** Não. Respondemos às consultas de distância do estudo 2, mas sem executar Floyd nos arquivos reais; a comparação completa do estudo 4 não foi feita neles. O relatório registra os limites.
 

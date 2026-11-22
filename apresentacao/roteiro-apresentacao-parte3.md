@@ -16,9 +16,9 @@
 
 ## Slide 4 — Bellman–Ford (2:00–3:20) · Gabriel
 
-“O enunciado pede distâncias de todas as origens até um destino `t`. Começamos com `d[t]=0` e, para cada arco `u→v`, tentamos melhorar `d[u]` com o peso do arco mais `d[v]`. Guardamos o sucessor para reconstruir o caminho. Encerramos quando uma rodada não altera valores. A implementação da biblioteca também processa a fronteira de vértices alterados.
+“O enunciado pede distâncias de todas as origens até um destino `t`. Começamos com `d[t]=0` e, para cada arco `u→v`, tentamos melhorar `d[u]` com o peso do arco mais `d[v]`. Guardamos o sucessor para reconstruir o caminho. Implementamos as duas melhorias da aula: guardar as distâncias num vetor, em vez de uma matriz por rodada; e atualizar a partir dos vértices alterados, parando se uma rodada não mudar nada.
 
-“Detectar um ciclo negativo no grafo inteiro é diferente de saber se ele afeta uma consulta. A resposta é menos infinito se a origem alcança o ciclo e, a partir dele, alcança o destino. Sem caminho, é mais infinito. A segunda otimização passou nos testes, mas não confirmamos que era exatamente a apresentada em aula.”
+“Detectar um ciclo negativo no grafo inteiro é diferente de saber se ele afeta uma consulta. A resposta é menos infinito se a origem alcança o ciclo e, a partir dele, alcança o destino. Sem caminho, é mais infinito.”
 
 ## Slide 5 — Floyd–Warshall (3:20–4:10) · João Paulo
 
@@ -34,13 +34,13 @@
 
 “O segundo estudo pede as distâncias entre 10, 20, 30, 40 e 50 usando Floyd. Calculamos as 25 distâncias em cada grafo, porém com cinco destinos de Bellman–Ford. As tabelas W4/W5 estão no apêndice A2. Em W1, todas as 25 entradas são menos infinito. São respostas às consultas, mas não representam uma execução de Floyd nos arquivos reais.
 
-“Só as matrizes de Floyd precisariam de cerca de 7,5 gigabytes já em W1/W2, contra aproximadamente 1,06 gigabyte livre, e seriam 15,6 trilhões de etapas. Em W5, as matrizes chegariam a 1,2 petabyte. Também não rodamos Bellman–Ford para todos os milhões de destinos: o trabalho e o volume de resultados seriam enormes. Num ensaio separado com 100 vértices, ambos rodaram dez vezes e Floyd foi 5,37 vezes mais rápido **naquela instância**, sem extrapolação para W1–W5.”
+“Só as matrizes de Floyd precisariam de cerca de 7,5 gigabytes já em W1/W2, contra aproximadamente 1,06 gigabyte livre, e seriam 15,6 trilhões de etapas. Em W5, as matrizes chegariam a 1,2 petabyte. Também não rodamos Bellman–Ford para todos os milhões de destinos, principalmente pelo tempo; poderíamos cronometrá-lo sem armazenar todos os resultados. Num ensaio separado com 100 vértices, ambos rodaram dez vezes e Floyd foi 5,37 vezes mais rápido **naquela instância**, sem extrapolação para W1–W5.”
 
 ## Slide 8 — Conclusão (6:55–7:45) · João Paulo
 
 “Entregamos os algoritmos dirigidos, a reconstrução de caminhos, os testes e as distâncias solicitadas nos cinco grafos. W4 e W5 também têm dez medições de Bellman–Ford. O achado mais marcante é W1: a forte conexidade faz um ciclo negativo afetar todos os pares.
 
-“Ficaram sem execução nos arquivos reais as medições de Floyd e a comparação completa de todos os pares, por limites de memória, tempo e tamanho da saída. O relatório separa esses limites dos resultados medidos. Obrigado; os apêndices têm as tabelas para perguntas.”
+“Ficaram sem execução nos arquivos reais as medições de Floyd, por memória e tempo, e a comparação completa de todos os pares, sobretudo por tempo. O relatório separa esses limites dos resultados medidos. Obrigado; os apêndices têm as tabelas para perguntas.”
 
 ## Se perguntarem pelos apêndices
 

@@ -13,4 +13,4 @@ Cada arco foi convertido para registro compacto de 12 bytes. Conversão e carga 
 
 O experimento anterior em fluxo calculava apenas as três distâncias até 100 e não tinha médias. Ele foi superado pela medição compacta completa. `bf_fluxo_w4_w5.cpp` permanece como registro histórico, não como fonte dos tempos finais.
 
-**Limites restantes:** Floyd–Warshall não foi executado nos arquivos reais por memória e tempo. Bellman–Ford para todos os pares também não foi executado neles pelo volume computacional e de resultados. As tabelas 5×5 são respostas às consultas, não uma execução de Floyd.
+**Limites restantes:** Floyd–Warshall não foi executado nos arquivos reais por memória e tempo. Bellman–Ford para todos os pares também não foi executado neles, principalmente pelo tempo necessário para processar todos os destinos; a medição poderia descartar os resultados sem armazenar uma matriz completa. As tabelas 5×5 são respostas às consultas, não uma execução de Floyd.

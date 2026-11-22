@@ -1,6 +1,0 @@
-arquivo,n,linhas_arcos,pesos_negativos,lacos,peso_min,peso_max,bytes_descompactados,pico_estimado_bytes,memoria_disponivel_bytes,status
-grafo_W_1.txt.gz,25000,549953,4998,0,-5.0,10.0,8865988,39397008,1115230208,executado
-grafo_W_2.txt.gz,25000,824964,0,0,0.0,10.0,13291362,57585531,1089646592,executado
-grafo_W_3.txt.gz,100000,6099941,0,0,0.0,10.0,102347898,421719369,1115045888,executado
-grafo_W_4.txt.gz,1000000,30999978,0,0,0.0,10.0,582129108,2295192738,1058312192,nao_carregado_memoria
-grafo_W_5.txt.gz,10000000,39999995,0,0,0.0,10.0,831124212,4126686108,1061806080,nao_carregado_memoria

@@ -200,66 +200,26 @@ gera os executáveis e executa os testes. Floyd-Warshall no CLI barra por padrã
 instâncias acima de 10 bilhões de iterações cúbicas; `--forcar` permite uma
 execução deliberada quando houver recursos. A checagem de memória permanece.
 
-Para reproduzir os estudos, passe os cinco `.txt.gz` fornecidos ao script, na
-ordem desejada. Ele inspeciona os arquivos compactados, estima o pico de RAM,
-executa dez repetições apenas quando a carga é viável e grava um perfil e um
-CSV por grafo em `resultados/parte3/`:
+Os estudos da Parte 3 usam `estudos_parte3` (um CSV `chave,valor` por grafo) e o
+script `scripts/rodar_estudos_parte3.sh`, que procura `grafo_W_1..5.txt` (ou `.gz`)
+em `dados/parte3/` e grava em `resultados/parte3/`:
 
 ```bash
-python3 scripts/rodar_parte3.py dados/grafo_W_{1,2,3,4,5}.txt.gz \
-  --executavel build/estudos_parte3 --saida resultados/parte3
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
+scripts/rodar_estudos_parte3.sh          # FW_REP=10 BF_TODOS_REP=10 AMOSTRA=100 por padrão
 ```
 
-O relógio envolve só cada chamada do algoritmo; leitura, descompactação e
-escrita ficam fora da medição. O estudo de Bellman-Ford por destino 100 e os
-25 pares do conjunto `{10,20,30,40,50}` são registrados separadamente. A
-comparação de todos os pares só é executada abaixo dos limites preventivos de
-memória e trabalho. Uma execução pulada é indicada explicitamente no CSV, sem
-substituir medição por estimativa. O perfil dos dados registra também peso
-negativo e laço. Os arquivos de caso não entram no repositório.
-
-`resultados/parte3/` contém as medições obtidas neste ambiente; os arquivos
-`grafo_W_*.csv` precisam ser interpretados junto com `perfil.csv` e com as
-limitações descritas no relatório da Parte 3.
-
-### W4 e W5 com representação compacta
-
-O carregador geral da biblioteca não coube na RAM disponível para W4 e W5.
-Como esses dois arquivos não têm pesos negativos e seus pesos têm centésimos,
-o estudo suplementar usa arcos binários de 12 bytes e um vetor de distâncias
-em centésimos. `preparar_compacto.py` lê o `.gz` uma vez; `estudo_compacto`
-carrega apenas os arcos compactos, executa Bellman–Ford por destino 100 dez
-vezes e calcula os 25 pares de `{10,20,30,40,50}`. O relógio envolve somente
-as varreduras do algoritmo, sem preparação nem leitura do binário. A rodada
-final sem alterações comprova convergência, e os caminhos selecionados são
-reconstruídos e conferidos pelo peso. As saídas ficam em
-`resultados/parte3/grafo_W_4_compacto.csv` e `grafo_W_5_compacto.csv`.
-
-Exemplo no Windows após `scripts/build_windows.ps1 -Test`:
-
-```powershell
-python scripts/preparar_compacto.py C:\caminho\grafo_W_4.txt.gz build_windows\W4.bin
-build_windows\estudo_compacto.exe build_windows\W4.bin 1000000 10 > resultados\parte3\grafo_W_4_compacto.csv
-python scripts/preparar_compacto.py C:\caminho\grafo_W_5.txt.gz build_windows\W5.bin
-build_windows\estudo_compacto.exe build_windows\W5.bin 10000000 10 > resultados\parte3\grafo_W_5_compacto.csv
-```
-
-O programa compacto é uma variante de Bellman–Ford para estes casos sem
-pesos negativos, separada da representação geral da biblioteca. Os tempos
-W4/W5 são dez rodadas desse programa em memória e não medem exatamente a
-mesma implementação usada nos CSVs W1–W3. As matrizes 5×5 W4/W5 são saídas
-de Bellman–Ford, **não** de Floyd–Warshall. Floyd não foi executado nos cinco
-arquivos reais, e a comparação completa de todos os pares continua inviável
-neste equipamento. Os `.bin` temporários não fazem parte da entrega.
-
-Para validar o circuito de comparação em uma instância pequena e reproduzível:
-
-```bash
-python3 scripts/gerar_validacao_parte3.py /tmp/validacao_100.txt
-build/estudos_parte3 /tmp/validacao_100.txt 10 > resultados/parte3/validacao_100.csv
-```
-
-Essa instância sintética não substitui qualquer um dos cinco casos exigidos.
+Por grafo: Bellman-Ford até 100 (distâncias de 10, 20, 30, caminhos e média de dez
+chamadas), os 25 pares de `{10,20,30,40,50}` por Floyd-Warshall (conferidos com
+cinco chamadas de Bellman-Ford), média do Floyd-Warshall e do Bellman-Ford para
+todos os pares. A carga do grafo e a preparação do Bellman-Ford (arcos de entrada e
+detecção global de ciclo negativo, feitas uma vez) ficam fora do cronômetro das
+consultas e são registradas à parte. O Floyd-Warshall só roda se `8n²` bytes couberem
+na memória (W_1 e W_2, 5 GB, cerca de 20 min por rodada); nos demais o CSV registra
+`nao_cabe_na_memoria`. O Bellman-Ford para todos os pares é medido inteiro em W_1 e
+W_2 e estimado por amostra de 100 destinos em W_3–W_5. O script também roda uma
+instância sintética de 100 vértices (`validacao_100`), com todos os estudos completos.
+CSVs existentes são pulados, o que permite retomar.
 
 ## Organização
 

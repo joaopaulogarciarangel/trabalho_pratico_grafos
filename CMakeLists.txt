@@ -43,7 +43,8 @@ add_library(grafos_lib STATIC
 )
 set_target_properties(grafos_lib PROPERTIES OUTPUT_NAME grafos)
 target_include_directories(grafos_lib PUBLIC include)
-target_link_libraries(grafos_lib PUBLIC grafos_opcoes)
+find_package(Threads REQUIRED)
+target_link_libraries(grafos_lib PUBLIC grafos_opcoes Threads::Threads)
 
 add_executable(grafos app/grafos_cli.cpp)
 target_link_libraries(grafos PRIVATE grafos_lib)
@@ -57,12 +58,6 @@ target_link_libraries(estudos_dijkstra PRIVATE grafos_lib)
 add_executable(estudos_parte3 estudos/estudos_parte3.cpp)
 target_link_libraries(estudos_parte3 PRIVATE grafos_lib)
 
-# Estudo suplementar com arcos compactos para os grandes grafos sem pesos negativos.
-add_executable(estudo_compacto estudos/estudo_compacto.cpp)
-target_link_libraries(estudo_compacto PRIVATE grafos_opcoes)
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_options(estudo_compacto PRIVATE -O3)
-endif()
 
 add_executable(gerar_grafo app/gerar_grafo.cpp)
 target_link_libraries(gerar_grafo PRIVATE grafos_opcoes)

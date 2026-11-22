@@ -15,15 +15,13 @@ $env:TEMP = $saida
 Push-Location $repo
 try {
     $fontes = @(Get-ChildItem -LiteralPath (Join-Path $repo 'src') -Filter '*.cpp' | ForEach-Object FullName)
-    & $Compiler -std=c++17 -O2 -DNDEBUG -static -Iinclude @fontes app/grafos_cli.cpp -o (Join-Path $saida 'grafos.exe')
+    & $Compiler -std=c++17 -O2 -DNDEBUG -static -pthread -Iinclude @fontes app/grafos_cli.cpp -o (Join-Path $saida 'grafos.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Falha ao compilar grafos.exe' }
-    & $Compiler -std=c++17 -O2 -DNDEBUG -static -Iinclude @fontes estudos/estudos_parte3.cpp -o (Join-Path $saida 'estudos_parte3.exe')
+    & $Compiler -std=c++17 -O2 -DNDEBUG -static -pthread -Iinclude @fontes estudos/estudos_parte3.cpp -o (Join-Path $saida 'estudos_parte3.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Falha ao compilar estudos_parte3.exe' }
-    & $Compiler -std=c++17 -O3 -DNDEBUG -static estudos/estudo_compacto.cpp -o (Join-Path $saida 'estudo_compacto.exe')
-    if ($LASTEXITCODE -ne 0) { throw 'Falha ao compilar estudo_compacto.exe' }
     if ($Test) {
         $testes = @(Get-ChildItem -LiteralPath (Join-Path $repo 'tests') -Filter '*.cpp' | ForEach-Object FullName)
-        & $Compiler -std=c++17 -O2 -DNDEBUG -static -Iinclude -Ithird_party -Itests @fontes @testes -o (Join-Path $saida 'testes.exe')
+        & $Compiler -std=c++17 -O2 -DNDEBUG -static -pthread -Iinclude -Ithird_party -Itests @fontes @testes -o (Join-Path $saida 'testes.exe')
         if ($LASTEXITCODE -ne 0) { throw 'Falha ao compilar testes.exe' }
         & (Join-Path $saida 'testes.exe') --no-colors
         if ($LASTEXITCODE -ne 0) { throw 'Testes falharam' }

@@ -125,6 +125,10 @@ TEST_CASE("P3: 100 grafos dirigidos aleatorios contra Floyd de tres matrizes") {
             CAPTURE(teste::nome(rep));
             auto g = dirigido(texto.str(), rep);
             auto f = grafos::floyd_warshall(g);
+            auto fd = grafos::floyd_warshall_distancias(g, 2);
+            const grafos::BellmanFord bf(g);
+            CHECK(fd.proximo.empty());
+            CHECK_THROWS_AS(fd.caminho(1, 1), grafos::ErroGrafo);
             bool ciclo = false;
             for (int k = 0; k < n; ++k) ciclo |= ref[static_cast<size_t>(k*n+k)] < 0;
             CHECK(f.ciclo_negativo == ciclo);
@@ -136,6 +140,8 @@ TEST_CASE("P3: 100 grafos dirigidos aleatorios contra Floyd de tres matrizes") {
                     CAPTURE(i);
                     CAPTURE(j);
                     CHECK(f.distancia(i+1,j+1) == d);
+                    CHECK(fd.distancia(i+1,j+1) == d);
+                    CHECK(bf.executar(j+1).dist[static_cast<size_t>(i)] == d);
                     CHECK(b.dist[static_cast<size_t>(i)] == d);
                     if (std::isfinite(d)) {
                         const auto path = f.caminho(i+1,j+1);
@@ -152,6 +158,45 @@ TEST_CASE("P3: 100 grafos dirigidos aleatorios contra Floyd de tres matrizes") {
                         CHECK(peso_b == d);
                     }
                 }
+            }
+        }
+    }
+}
+
+TEST_CASE("P3: Floyd-Warshall em blocos (n > bloco) igual ao classico e ao Bellman-Ford preparado") {
+    std::mt19937 rng(242);
+    for (int variante = 0; variante < 3; ++variante) {
+        // 0: pesos >= 0; 1: negativos sem ciclo (arcos so de i para j > i); 2: com ciclo negativo isolado
+        const int n = 300 + variante * 37;
+        std::ostringstream texto;
+        texto << n << '\n';
+        for (int e = 0; e < 4 * n; ++e) {
+            int u = 1 + static_cast<int>(rng() % static_cast<uint32_t>(n));
+            int v = 1 + static_cast<int>(rng() % static_cast<uint32_t>(n));
+            int w = static_cast<int>(rng() % 20);
+            if (variante >= 1) {
+                if (u == v) continue;
+                if (u > v) std::swap(u, v);
+                w -= 5;
+            }
+            texto << u << ' ' << v << ' ' << w << '\n';
+        }
+        if (variante == 2) texto << "7 8 -3\n8 7 1\n";
+        CAPTURE(variante);
+        auto g = dirigido(texto.str(), grafos::Representacao::Lista);
+        const auto f = grafos::floyd_warshall(g);
+        const auto fd = grafos::floyd_warshall_distancias(g, 3);
+        const grafos::BellmanFord bf(g);
+        CHECK(fd.ciclo_negativo == (variante == 2));
+        CHECK(f.ciclo_negativo == fd.ciclo_negativo);
+        CHECK(f.dist == fd.dist);
+        for (int t : {1, 50, 129, 257, n}) {
+            const auto b = bf.executar(t);
+            CHECK(b.ciclo_negativo == fd.ciclo_negativo);
+            for (int s = 1; s <= n; ++s) {
+                CAPTURE(t);
+                CAPTURE(s);
+                CHECK(b.dist[static_cast<size_t>(s - 1)] == fd.distancia(s, t));
             }
         }
     }

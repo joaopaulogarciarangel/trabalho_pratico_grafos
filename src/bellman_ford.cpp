@@ -4,6 +4,7 @@
 #include <cmath>
 #include <deque>
 #include <limits>
+#include <string>
 #include <utility>
 #include "grafos/erro.hpp"
 
@@ -95,28 +96,42 @@ bool conexo_forte(const std::vector<std::vector<Arco>>& entrada,
 }
 } // namespace
 
-ResultadoBellmanFord bellman_ford(const Grafo& g, int32_t destino) {
-    g.validar_vertice(destino);
-    const int32_t n = g.n();
-    const double INF = std::numeric_limits<double>::infinity();
-    std::vector<std::vector<Arco>> entrada(static_cast<size_t>(n));
-    std::vector<std::vector<Arco>> saida(static_cast<size_t>(n));
+BellmanFord::BellmanFord(const Grafo& g) : n_(g.n()), entrada_(static_cast<size_t>(g.n())) {
+    // Preparacao independente do destino: feita uma vez, fora do cronometro das consultas.
+    std::vector<std::vector<Arco>> saida(static_cast<size_t>(n_));
     g.visitar([&](const auto& concreto) {
-        for (int32_t u = 0; u < n; ++u) {
+        for (int32_t u = 0; u < n_; ++u) {
             concreto.para_cada_vizinho_com_peso(u, [&](int32_t v, double w) {
-                entrada[static_cast<size_t>(v)].emplace_back(u, w);
+                entrada_[static_cast<size_t>(v)].emplace_back(u, w);
                 saida[static_cast<size_t>(u)].emplace_back(v, w);
             });
         }
     });
+    ciclo_global_ = ciclo_global(saida, g.tem_peso_negativo());
+    // Forte conexidade nao depende da raiz; so interessa se houver ciclo negativo.
+    if (ciclo_global_ && n_ > 0) fortemente_conexo_ = conexo_forte(entrada_, saida, 0);
+}
+
+ResultadoBellmanFord bellman_ford(const Grafo& g, int32_t destino) {
+    g.validar_vertice(destino);
+    return BellmanFord(g).executar(destino);
+}
+
+ResultadoBellmanFord BellmanFord::executar(int32_t destino) const {
+    if (destino < 1 || destino > n_) {
+        throw ErroGrafo("vertice " + std::to_string(destino) + " fora do intervalo 1.." + std::to_string(n_));
+    }
+    const int32_t n = n_;
+    const auto& entrada = entrada_;
+    const double INF = std::numeric_limits<double>::infinity();
     ResultadoBellmanFord r;
     r.destino = destino;
     r.dist.assign(static_cast<size_t>(n), INF);
     r.sucessor.assign(static_cast<size_t>(n), -1);
     r.dist[static_cast<size_t>(destino - 1)] = 0;
     r.sucessor[static_cast<size_t>(destino - 1)] = 0;
-    r.ciclo_negativo = ciclo_global(saida, g.tem_peso_negativo());
-    if (r.ciclo_negativo && conexo_forte(entrada, saida, destino - 1)) {
+    r.ciclo_negativo = ciclo_global_;
+    if (r.ciclo_negativo && fortemente_conexo_) {
         r.ciclo_afeta_destino = true;
         std::fill(r.dist.begin(), r.dist.end(), -INF);
         std::fill(r.sucessor.begin(), r.sucessor.end(), -1);
